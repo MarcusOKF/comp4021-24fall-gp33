@@ -1,0 +1,27 @@
+{
+  "name": "comp4021-24fall-gp33",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcusOKF/comp4021-24fall-gp33.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarcusOKF/comp4021-24fall-gp33/issues"
+  },
+  "homepage": "https://github.com/MarcusOKF/comp4021-24fall-gp33#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "fs": "^0.0.1-security",
+    "socket.io": "^4.7.5"
+  }
+}
