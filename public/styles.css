@@ -1,0 +1,52 @@
+/* Basic */
+body {
+    min-width: 600px;
+    min-height: 300px;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+/* Game Play Page Layout */
+#game-play-layout {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid:
+      "game-play-header game-play-header game-play-header" 7%
+      "player-ability-panels game-arena game-status-panel" 31%
+      "player-ability-panels game-arena game-status-panel" 31%
+      "player-ability-panels game-arena game-status-panel" 31%
+      / 1fr 60% 1fr;
+}
+/* Header */
+#game-play-header { 
+    grid-area: game-play-header; 
+    border: 1px solid; 
+}
+/* Left Panel */
+#player-ability-panels { 
+    grid-area: player-ability-panels;
+    display: flex;
+    flex-direction: column;
+}
+.ability-panel {
+    flex: 1;
+    border: 1px solid; 
+}
+/* Middle Panel */
+#game-arena { grid-area: game-arena;border: 1px solid; }
+/* Right Panel */
+#game-status-panel { 
+    grid-area: game-status-panel;
+    display: flex;
+    flex-direction: column;
+}
+.points-panel {
+    flex: 0.275;
+    border: 1px solid; 
+}
+.time-panel {
+    flex: 0.45;
+    border: 1px solid; 
+}
