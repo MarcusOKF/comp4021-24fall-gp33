@@ -18,6 +18,40 @@ app.use(express.static("public"));
 // Use the json middleware to parse JSON data
 app.use(express.json());
 
+
+const onlineUsers = [
+    {
+        username: "tom",
+        playerNo: 2,
+        name: "Tom Chan"
+    },
+    {
+        username: "sam",
+        playerNo: 1,
+        name: "Sam Wong"
+    }
+]
+
+// Get all online users
+app.get("/onlineUsers", (req, res)=>{
+    res.json(onlineUsers)
+})
+
+// Socket related code
+io.on("connection", (socket) => {
+    // Add a new user to the online user list
+    // To de done
+
+    // Broadcast to all users about online user list
+    io.emit("broadcastNewConnection")
+
+
+    socket.on("getUsers", () => {
+        socket.emit("users", JSON.stringify(onlineUsers))
+    })
+
+});
+
 // Use a web server to listen at port 8000
 httpServer.listen(8000, () => {
     console.log("The chat server has started at port 8000...");

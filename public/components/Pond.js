@@ -1,14 +1,16 @@
 /*
+    cv: canvas
     ctx: canvas context
     x: x_position on canvas
     y: y_position on canvas
 */
-const Pond = (ctx, x, y) => {
+const Pond = (cv, ctx, x, y, userFrog1, userFrog2) => {
+    const drawParms = {x, y, width: cv.get(0).width-x*2, height: cv.get(0).height-y*2, radius: 100}
 
     const draw = () => {
         ctx.beginPath()
         ctx.lineWidth = 5; // Border width
-        ctx.roundRect(x, y, 700, 450, 100)
+        ctx.roundRect(drawParms.x, drawParms.y, drawParms.width, drawParms.height, drawParms.radius)
         ctx.fillStyle = '#BEE9EF'; /* Replace with your desired background color */
         ctx.strokeStyle = "black"; // Border color
         ctx.stroke()
@@ -18,10 +20,25 @@ const Pond = (ctx, x, y) => {
     const checkPointIsInPond = (targetX,targetY) => {
 
         ctx.beginPath()
-        ctx.roundRect(x, y, 700, 450, 100) // The x,y here is the position of Pond in canvas
+        ctx.roundRect(drawParms.x, drawParms.y, drawParms.width, drawParms.height, drawParms.radius) // The x,y here is the position of Pond in canvas
 
         return ctx.isPointInPath(targetX, targetY)
     }
+
+    cv.on("click", function(e){
+        let offset = cv.eq(0).offset();
+        let targetX = e.pageX-offset.left
+        let targetY = e.pageY-offset.top
+        if (checkPointIsInPond(targetX, targetY)){
+            // For now lets say the session user is player 1
+            const user = { playerNo: 2 } // Auth.getUser()
+            if (user.playerNo == 1){
+                userFrog1.userFrogTongue.shootTongueToTarget(targetX, targetY)
+            } else if (user.playerNo == 2){
+                userFrog2.userFrogTongue.shootTongueToTarget(targetX, targetY)
+            }
+        }
+    })
 
     return { draw, checkPointIsInPond }
 };
