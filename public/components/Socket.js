@@ -14,25 +14,30 @@ const Socket = (function() {
         // Wait for the socket to connect successfully
         socket.on("connect", () => {
             console.log("This browser connected to socket")
-            // Get the online user list
-            // socket.emit("getUsers");
-
         });
-
-        socket.on("users", (onlineUsers) => {
-            onlineUsers = JSON.parse(onlineUsers);
-            console.table(onlineUsers)
-        })
 
 
         socket.on("broadcastNewConnection", () => {
             console.log("This broadcasts a new connection")
         })
+
+        socket.on("startGameForAllUsers", () => {
+            console.log("Start game for users")
+            GameController.startGame()
+        })
+
+        socket.on("drawTongue", (points) => {
+            GameController.drawTongueOnCanvas(JSON.parse(points))
+        })
     };
 
-    const getOnlineUsers = () => {
-        socket.emit("getUsers");
+    const startGame = () => {
+        socket.emit("startGame")
     }
 
-    return { getSocket, connect };
+    const drawTongue = (points) => {
+        socket.emit("passTonguePoints", JSON.stringify(points))
+    }
+
+    return { getSocket, connect, startGame, drawTongue };
 })();

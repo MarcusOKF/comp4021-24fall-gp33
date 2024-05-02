@@ -42,13 +42,18 @@ io.on("connection", (socket) => {
     // Add a new user to the online user list
     // To de done
 
-    // Broadcast to all users about online user list
+    // Broadcast to all users 
     io.emit("broadcastNewConnection")
 
 
-    socket.on("getUsers", () => {
-        socket.emit("users", JSON.stringify(onlineUsers))
+    socket.on("startGame", () => {
+        io.emit("startGameForAllUsers")
     })
+
+    socket.on("passTonguePoints", (points) => {
+        io.emit("drawTongue", points)
+    })
+
 
 });
 

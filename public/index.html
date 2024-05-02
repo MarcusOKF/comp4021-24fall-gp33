@@ -38,6 +38,7 @@
     <script src="/socket.io/socket.io.min.js"></script>
     <script src="components/Socket.js"></script>
     <script src="components/GameArena.js"></script>
+    <script src="components/GameController.js"></script>
     <script src="components/UserFrog.js"></script>
     <script src="components/UserFrogTongue.js"></script>
     <script src="components/Pond.js"></script>
@@ -48,9 +49,10 @@
             Socket.connect()
 
             // Items of the game
-            let userFrog1, userFrog2;
-            let pond;
-            let spectatorFrogs = [];
+            // let userFrog1, userFrog2;
+            // let pond;
+            // let spectatorFrogs = [];
+            // let marbles = []
 
             //Build fixed size canvas and context
             const CANVAS_WIDTH = 800
@@ -60,31 +62,9 @@
             let canvas = $("#game-arena-canvas")
             let context = canvas.get(0).getContext("2d")
 
-
-
             // A tmp function that starts the game by click button
             $("#start-game-button").on("click", (e) => {
-                // Give background color
-                context.fillStyle = '#755E56'; /* Replace with your desired background color */
-                context.fillRect(0, 0, canvas.get(0).width, canvas.get(0).height);
-
-                // GET online users
-                fetchData("/onlineUsers")
-                .then(users => {
-                    let p1 = users.find(u => u.playerNo == 1)
-                    let p2 = users.find(u => u.playerNo == 2)
-                    if (p1 && p2){
-                        // Load the UserFrogs
-                        userFrog1 = UserFrog(context, CANVAS_WIDTH/2, 10, p1)
-                        userFrog1.draw("n")
-                        userFrog2 = UserFrog(context, CANVAS_WIDTH/2, CANVAS_HEIGHT-80, p2)
-                        userFrog2.draw("n")
-
-                        // Load the pond
-                        pond = Pond(canvas, context, 75, 100, userFrog1, userFrog2)
-                        pond.draw()                       
-                    }
-                })   
+                Socket.startGame() // Calls GameController.startGame()
             })
 
         });

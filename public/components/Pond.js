@@ -31,7 +31,7 @@ const Pond = (cv, ctx, x, y, userFrog1, userFrog2) => {
         let targetY = e.pageY-offset.top
         if (checkPointIsInPond(targetX, targetY)){
             // For now lets say the session user is player 1
-            const user = { playerNo: 2 } // Auth.getUser()
+            const user = { playerNo: 1 } // Auth.getUser()
             if (user.playerNo == 1){
                 userFrog1.userFrogTongue.shootTongueToTarget(targetX, targetY)
             } else if (user.playerNo == 2){
