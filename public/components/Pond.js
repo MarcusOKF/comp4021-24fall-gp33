@@ -40,5 +40,9 @@ const Pond = (cv, ctx, x, y, userFrog1, userFrog2) => {
         }
     })
 
-    return { draw, checkPointIsInPond }
+    const getPondParams = () => {
+        return drawParms
+    }
+
+    return { draw, checkPointIsInPond, getPondParams }
 };
