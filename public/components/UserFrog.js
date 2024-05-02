@@ -7,26 +7,31 @@ const UserFrog = (ctx, x, y, user) => {
     const imageWidth = 70
     const imageHeight = 70
     let userFrogTongue;
+    let frog;
 
     // Construct tongue when create object
     userFrogTongue = UserFrogTongue(ctx, x, y+imageHeight/2, user)
 
     // Draws the Frog, Tongue and User Name
-    const draw = (status) => {
-        let frog = new Image()
+    const draw = () => {
+        // Draw Frog
+        ctx.clearRect(x-imageWidth/2, y, imageWidth, imageHeight);
+        ctx.drawImage(frog, x-imageWidth/2, y, imageWidth, imageHeight);
+
+        // Draw Tongue Ref point
+        userFrogTongue.drawRefPoint()
+
+        // Draw Name
+        ctx.font = "20px Arial"
+        ctx.fillText(`Player ${user.playerNo}:`, x+100, y+imageHeight/2)
+        ctx.font = "20px Arial"
+        ctx.fillText(`${user.name}`, x+100, y+imageHeight)
+    }
+
+    const loadFrog = (status) => {
+        frog = new Image()
         frog.onload = function () { 
-            // Draw Frog
-            ctx.clearRect(x-imageWidth/2, y, imageWidth, imageHeight);
-            ctx.drawImage(frog, x-imageWidth/2, y, imageWidth, imageHeight);
-
-            // Draw Tongue Ref point
-            userFrogTongue.drawRefPoint()
-
-            // Draw Name
-            ctx.font = "20px Arial"
-            ctx.fillText(`Player ${user.playerNo}:`, x+100, y+imageHeight/2)
-            ctx.font = "20px Arial"
-            ctx.fillText(`${user.name}`, x+100, y+imageHeight)
+            draw()
         }
         if (status == "n"){
             frog.src = "../assets/normal_frog.png"
@@ -40,6 +45,5 @@ const UserFrog = (ctx, x, y, user) => {
     }
 
 
-
-    return { userFrogTongue, draw }
+    return { userFrogTongue, draw, loadFrog }
 };

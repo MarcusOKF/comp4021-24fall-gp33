@@ -61,6 +61,9 @@
             arena.append(`<canvas id="game-arena-canvas" width="${CANVAS_WIDTH}" height="${CANVAS_HEIGHT}"></canvas>`)
             let canvas = $("#game-arena-canvas")
             let context = canvas.get(0).getContext("2d")
+            // Give background color
+            // context.fillStyle = '#755E56'; /* Replace with your desired background color */
+            // context.fillRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 
             // A tmp function that starts the game by click button
             $("#start-game-button").on("click", (e) => {
