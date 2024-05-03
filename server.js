@@ -106,7 +106,7 @@ io.on("connection", (socket) => {
         }
           
         // Assign portion
-        const totalMarbles = 10
+        const totalMarbles = 100
         const yellowTotal = Math.floor(0.5 * totalMarbles)
         const greenTotal = Math.floor(0.4 * totalMarbles)
         const blackTotal = Math.floor(0.1 * totalMarbles)

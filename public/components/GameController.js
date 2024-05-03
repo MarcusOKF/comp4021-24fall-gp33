@@ -12,6 +12,10 @@ const GameController = (function() {
 
     let pointsPanel;
     let abilityPanel;
+    let timePanel;
+
+    const totalGameTime = 60;
+    let gameStartTime = 0;
 
 
     const startGame = () => {
@@ -32,7 +36,7 @@ const GameController = (function() {
 
                 // Load the pond, and relate the two frogs to the pond.
                 pond = Pond(canvas, context, 75, 100, userFrog1, userFrog2)
-                pond.draw()        
+                pond.draw("Ready?")        
                 
                 // Generate Marbels in the pond on the server side , to provide the same view for both players
                 pondDimensions = pond.getPondParams()
@@ -47,16 +51,35 @@ const GameController = (function() {
                 abilityPanel = AbilityPanel
                 abilityPanel.refreshUserAbilityPanel(user1)
                 abilityPanel.refreshUserAbilityPanel(user2)
+
+                // Load time panel
+                timePanel = TimePanel
+                // timePanel.updateTimer(totalGameTime)
                 
+            } else {
+                console.log("Need two users.....")
+                return
             }
         })
 
         // Start main game loop after X seconds, to make sure the stuff is loaded
-        setTimeout(() => {
-            pond.enableClickablePond()
-            requestAnimationFrame(doFrame)
-        }, 3000)
+        let countdownSeconds = 3
 
+        function countdown(seconds) {
+            var interval = setInterval(function() {
+                TimePanel.updateStartGameTimer(seconds)
+                console.log(seconds);
+                seconds--;
+              
+                if (seconds < 0) {
+                    clearInterval(interval);
+                    pond.enableClickablePond()
+                    requestAnimationFrame(doFrame)
+                }
+            }, 1000);
+        }
+          
+        countdown(countdownSeconds);        
     }
 
     const loadMarbles = (ms) => {
@@ -90,6 +113,18 @@ const GameController = (function() {
 
 
     const doFrame = (now) => {
+        // Timer
+        if (gameStartTime == 0) gameStartTime = now;
+        const gameTimeSoFar = now - gameStartTime;
+        const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+        timePanel.updateTimer(timeRemaining)
+
+        // Times up, stop animation
+        if (timeRemaining <= 0){
+            gameOverHandler()
+            return
+        }
+
         // Clear the context
         context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 
@@ -102,8 +137,14 @@ const GameController = (function() {
         Socket.randomizeMarbles(pondDimensions) // This also called the updateMarbles function
         drawMarbles()
 
+
         // Looping
         requestAnimationFrame(doFrame)
+    }
+
+    const gameOverHandler = () => {
+        timePanel.updateTimer("0")
+        pond.disableClickablePond()
     }
 
     const drawTongueOnCanvas = (points) => {
@@ -157,8 +198,6 @@ const GameController = (function() {
         Socket.addUserPoints(user, addedPoints)
         Socket.deleteMarbles(marblesToRemove)
 
-        console.log(addedPoints)
-        console.log(marblesToRemove)
     }
 
 
