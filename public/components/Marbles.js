@@ -1,14 +1,23 @@
-const Marble = (ctx, x, y, color) => {
+const Marble = (ctx, x, y, color, points, size, speedX, speedY) => {
+    let currX = x; 
+    let currY = y;
 
-    let speed = 0;
-    let points = 10;
+    const getMarblePoints = () => {
+        return points
+    }
     
     const draw = () => {
         ctx.beginPath();
-        ctx.arc(x, y, 5, 0, 2 * Math.PI);
+        ctx.arc(currX, currY, size, 0, 2 * Math.PI);
         ctx.fillStyle = color;
+        ctx.stroke()
         ctx.fill();
     }
 
-    return { draw }
+    const updateMarblePosition = (targetX, targetY) => {
+        currX = targetX
+        currY = targetY
+    }
+
+    return { draw, getMarblePoints, updateMarblePosition }
 }

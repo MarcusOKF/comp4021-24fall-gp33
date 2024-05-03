@@ -5,7 +5,9 @@
     y: y_position on canvas
 */
 const Pond = (cv, ctx, x, y, userFrog1, userFrog2) => {
-    const drawParms = {x, y, width: cv.get(0).width-x*2, height: cv.get(0).height-y*2, radius: 100}
+    let clikable = false
+
+    const drawParms = {x, y, width: cv.get(0).width-x*2, height: cv.get(0).height-y*2, radius: 0}
 
     const draw = () => {
         ctx.beginPath()
@@ -29,7 +31,7 @@ const Pond = (cv, ctx, x, y, userFrog1, userFrog2) => {
         let offset = cv.eq(0).offset();
         let targetX = e.pageX-offset.left
         let targetY = e.pageY-offset.top
-        if (checkPointIsInPond(targetX, targetY)){
+        if (checkPointIsInPond(targetX, targetY) && clikable){
             // For now lets say the session user is player 1
             const user = { playerNo: 1 } // Auth.getUser()
             if (user.playerNo == 1){
@@ -44,5 +46,9 @@ const Pond = (cv, ctx, x, y, userFrog1, userFrog2) => {
         return drawParms
     }
 
-    return { draw, checkPointIsInPond, getPondParams }
+    const enableClickablePond = () => {
+        clikable = true
+    }
+
+    return { draw, checkPointIsInPond, getPondParams, enableClickablePond }
 };

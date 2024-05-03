@@ -5,8 +5,9 @@ const GameController = (function() {
     let context;
     let userFrog1, userFrog2;
     let pond;
+    let pondDimensions;
     let spectatorFrogs = [];
-    let marbles = []
+    let marbles = {}
 
 
     const startGame = () => {
@@ -29,22 +30,44 @@ const GameController = (function() {
                 pond = Pond(canvas, context, 75, 100, userFrog1, userFrog2)
                 pond.draw()        
                 
-                // Generate Marbels in the pond, should be on server side ?
-                const {x, y, width, height} = pond.getPondParams()
-
-                marbles.push(Marble(context, x+100, y+100, "red"))
-                for (let marble of marbles){
-                    marble.draw()
-                }
+                // Generate Marbels in the pond on the server side , to provide the same view for both players
+                pondDimensions = pond.getPondParams()
+                Socket.generateMarbles(pondDimensions) // This triggers the loadMarbles() function
+                
             }
         })
 
         // Start main game loop after X seconds, to make sure the stuff is loaded
         setTimeout(() => {
+            pond.enableClickablePond()
             requestAnimationFrame(doFrame)
         }, 3000)
 
     }
+
+    const loadMarbles = (ms) => {
+        for (let [marbleId, params] of Object.entries(ms)){
+            const {x, y, color, points, size, speedX, speedY} = params
+            marbles[marbleId] = Marble(context, x, y, color, points, size, speedX, speedY)
+        }
+    }
+
+    const drawMarbles = () => {
+        for (let [marbleId, marble] of Object.entries(marbles)){
+            marble.draw()
+        }
+    }
+
+    const updateMarbles = (ms) => {
+        for (let [marbleId, params] of Object.entries(ms)){
+            const {x, y} = params
+            if (marbles[marbleId]){
+                marbles[marbleId].updateMarblePosition(x, y) 
+            }
+             
+        }
+    }
+
 
     const doFrame = (now) => {
         // Clear the context
@@ -55,10 +78,9 @@ const GameController = (function() {
         userFrog2.draw()
         pond.draw()
 
-        for (let marble of marbles){
-            marble.draw()
-        }
-        
+        // Randomly update the coordinates of marbles in server, then draw
+        Socket.randomizeMarbles(pondDimensions) // This also calle the updateMarbles function
+        drawMarbles()
 
         // Looping
         requestAnimationFrame(doFrame)
@@ -97,6 +119,5 @@ const GameController = (function() {
     }
 
 
-
-    return { startGame, drawTongueOnCanvas }
+    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles }
 })();

@@ -29,6 +29,14 @@ const Socket = (function() {
         socket.on("drawTongue", (points) => {
             GameController.drawTongueOnCanvas(JSON.parse(points))
         })
+
+        socket.on("loadMarbles", (marbles) => {
+            GameController.loadMarbles(JSON.parse(marbles))
+        })
+
+        socket.on("updateMarbles", (marbles) => {
+            GameController.updateMarbles(JSON.parse(marbles))
+        })
     };
 
     const startGame = () => {
@@ -39,5 +47,13 @@ const Socket = (function() {
         socket.emit("passTonguePoints", JSON.stringify(points))
     }
 
-    return { getSocket, connect, startGame, drawTongue };
+    const generateMarbles = (dim) => {
+        socket.emit("generateMarbles", JSON.stringify(dim))
+    }
+
+    const randomizeMarbles = (dim) => {
+        socket.emit("randomizeMarbles", JSON.stringify(dim))
+    }
+
+    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles };
 })();

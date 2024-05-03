@@ -9,7 +9,7 @@ const UserFrogTongue = (ctx, x, y, user) => {
 
     // This function draws a shape, given (x,y) and (targetX, targetY)
     const shootTongueToTarget = (targetX, targetY) => {
-        const tongueWidth = 20
+        const tongueWidth = 25
 
         var point1 = { x: x-tongueWidth/2 , y: y };
         var point2 = { x: x+tongueWidth/2, y: y };
