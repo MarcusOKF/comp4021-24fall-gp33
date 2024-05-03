@@ -3,11 +3,15 @@
 const GameController = (function() {
     let canvas;
     let context;
+
     let userFrog1, userFrog2;
-    let pond;
-    let pondDimensions;
+    let user1, user2;
+    let pond, pondDimensions;
     let spectatorFrogs = [];
     let marbles = {}
+
+    let pointsPanel;
+    let abilityPanel;
 
 
     const startGame = () => {
@@ -17,13 +21,13 @@ const GameController = (function() {
         // Load the game objects
         fetchData("/onlineUsers")
         .then(users => {
-            let p1 = users.find(u => u.playerNo == 1)
-            let p2 = users.find(u => u.playerNo == 2)
-            if (p1 && p2){
+            user1 = users.find(u => u.playerNo == 1)
+            user2 = users.find(u => u.playerNo == 2)
+            if (user1 && user2){
                 // Load the UserFrogs
-                userFrog1 = UserFrog(context, canvas.get(0).width/2, 10, p1)
+                userFrog1 = UserFrog(context, canvas.get(0).width/2, 10, user1)
                 userFrog1.loadFrog("n")
-                userFrog2 = UserFrog(context, canvas.get(0).width/2, canvas.get(0).height-80, p2)
+                userFrog2 = UserFrog(context, canvas.get(0).width/2, canvas.get(0).height-80, user2)
                 userFrog2.loadFrog("n")
 
                 // Load the pond, and relate the two frogs to the pond.
@@ -33,6 +37,16 @@ const GameController = (function() {
                 // Generate Marbels in the pond on the server side , to provide the same view for both players
                 pondDimensions = pond.getPondParams()
                 Socket.generateMarbles(pondDimensions) // This triggers the loadMarbles() function
+
+                //Load points panels
+                pointsPanel = PointsPanel
+                pointsPanel.refreshUserPointsPanel(user1)
+                pointsPanel.refreshUserPointsPanel(user2)
+
+                // Load ability panels
+                abilityPanel = AbilityPanel
+                abilityPanel.refreshUserAbilityPanel(user1)
+                abilityPanel.refreshUserAbilityPanel(user2)
                 
             }
         })
@@ -68,6 +82,12 @@ const GameController = (function() {
         }
     }
 
+    const deleteMarbles = (marbleIdxs) => {
+        for (let idx of marbleIdxs){
+            delete marbles[idx]
+        }
+    }
+
 
     const doFrame = (now) => {
         // Clear the context
@@ -79,7 +99,7 @@ const GameController = (function() {
         pond.draw()
 
         // Randomly update the coordinates of marbles in server, then draw
-        Socket.randomizeMarbles(pondDimensions) // This also calle the updateMarbles function
+        Socket.randomizeMarbles(pondDimensions) // This also called the updateMarbles function
         drawMarbles()
 
         // Looping
@@ -107,6 +127,8 @@ const GameController = (function() {
             context.closePath();
             context.fillStyle = "red";
             context.fill()
+            context.lineWidth = 2;
+            context.stroke()
         
             currentFrame++;
         
@@ -118,6 +140,27 @@ const GameController = (function() {
         animate();
     }
 
+    // Core logic for calculating whether a marble is eaten
+    const handleShootTongueToTarget = (points, user) => {
+        let addedPoints = 0;
+        let marblesToRemove = []
 
-    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles }
+        for (let [marbleId, marble] of Object.entries(marbles)){
+            const {currX:circleX, currY:circleY, size:radius} = marble.getMarbleXYR()
+            let eat = checkOverlap(circleX, circleY, radius, points[0], points[1], points[2], points[3])
+            if (eat) {
+                addedPoints += marble.getMarblePoints()
+                marblesToRemove.push(marbleId)
+            }
+        }
+
+        Socket.addUserPoints(user, addedPoints)
+        Socket.deleteMarbles(marblesToRemove)
+
+        console.log(addedPoints)
+        console.log(marblesToRemove)
+    }
+
+
+    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles }
 })();

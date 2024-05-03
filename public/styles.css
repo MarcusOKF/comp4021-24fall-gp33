@@ -33,6 +33,13 @@ body {
 .ability-panel {
     flex: 1;
     border: 1px solid; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 30px 10px 30px 10px;
 }
 /* Middle Panel */
 #game-arena { 
@@ -56,6 +63,13 @@ body {
 .points-panel {
     flex: 0.275;
     border: 1px solid; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 25px;
 }
 .time-panel {
     flex: 0.45;

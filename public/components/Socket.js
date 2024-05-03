@@ -37,6 +37,14 @@ const Socket = (function() {
         socket.on("updateMarbles", (marbles) => {
             GameController.updateMarbles(JSON.parse(marbles))
         })
+
+        socket.on("deleteMarbles", (marbleIdxs) => {
+            GameController.deleteMarbles(JSON.parse(marbleIdxs))
+        })
+
+        socket.on("refreshUserPointsPanel", (user) => {
+            PointsPanel.refreshUserPointsPanel(JSON.parse(user))
+        })
     };
 
     const startGame = () => {
@@ -55,5 +63,13 @@ const Socket = (function() {
         socket.emit("randomizeMarbles", JSON.stringify(dim))
     }
 
-    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles };
+    const deleteMarbles = (marbleIdxs) => {
+        socket.emit("deleteMarbles", JSON.stringify(marbleIdxs))
+    }
+
+    const addUserPoints = (user, addedPoints) => {
+        socket.emit("addUserPoints", JSON.stringify(user), addedPoints)
+    }
+
+    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles};
 })();

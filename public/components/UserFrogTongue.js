@@ -18,6 +18,9 @@ const UserFrogTongue = (ctx, x, y, user) => {
 
         // Also shows the shoot tongue animation to the other player
         Socket.drawTongue([point1, point2, point3, point4])
+
+        // Handle the calculation of shoot tongue
+        GameController.handleShootTongueToTarget([point1, point2, point3, point4], user)
     }
 
     // const checkPointIsInTongue = (targetX,targetY, ctx) => {

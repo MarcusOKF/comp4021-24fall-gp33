@@ -5,7 +5,8 @@ const fs = require("fs");
 const session = require("express-session");
 
 const { createServer } = require("http")
-const { Server } = require("socket.io")
+const { Server } = require("socket.io");
+const { on } = require("events");
 
 // Create the Express app
 const app = express();
@@ -93,9 +94,9 @@ io.on("connection", (socket) => {
             const randomDirection = () => {
                 return Math.random() < 0.5 ? -1 : 1
             }
-            if (color == "yellow") return 1 * randomDirection()
-            if (color == "green") return 2 * randomDirection()
-            if (color == "black") return 4 * randomDirection()
+            if (color == "yellow") return 0.2 * randomDirection()
+            if (color == "green") return 0.5 * randomDirection()
+            if (color == "black") return 1 * randomDirection()
             return 0
         }
 
@@ -105,7 +106,7 @@ io.on("connection", (socket) => {
         }
           
         // Assign portion
-        const totalMarbles = 100
+        const totalMarbles = 10
         const yellowTotal = Math.floor(0.5 * totalMarbles)
         const greenTotal = Math.floor(0.4 * totalMarbles)
         const blackTotal = Math.floor(0.1 * totalMarbles)
@@ -170,6 +171,29 @@ io.on("connection", (socket) => {
         }
 
         io.emit("updateMarbles", JSON.stringify(marbles))
+    })
+
+    socket.on("addUserPoints", (user, addedPoints) => {
+        user = JSON.parse(user)
+
+        onlineUsers.forEach(u => {
+            if (u.playerNo == user.playerNo) u.points += addedPoints
+        })
+
+        let returnUser = onlineUsers.find(u => u.playerNo == user.playerNo)
+
+        io.emit("refreshUserPointsPanel", JSON.stringify(returnUser))
+
+    })
+
+    socket.on("deleteMarbles", (marbleIdxs) => {
+        marbleIdxs = JSON.parse(marbleIdxs)
+
+        for (let idx of marbleIdxs){
+            delete marbles[idx]
+        }
+
+        io.emit("deleteMarbles", JSON.stringify(marbleIdxs))
     })
 
 
