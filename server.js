@@ -27,7 +27,9 @@ let onlineUsers = [
         name: "Tom Chan",
         points: 0,
         isFrozen: false,
-        isDoublePoints: false
+        hasFreezeAbility: false,
+        isDoublePoints: false,
+        cooldown: 0
     },
     {
         username: "sam",
@@ -35,11 +37,17 @@ let onlineUsers = [
         name: "Sam Wong",
         points: 0,
         isFrozen: false,
-        isDoublePoints: false
+        hasFreezeAbility: false,
+        isDoublePoints: false,
+        cooldown: 0
     }
 ]
 
 let marbles = {}
+
+const freezeAbilityTime = 6
+const doublePointsAbilityTime = 6
+const pointsToWin = 250;
 
 
 // Get all online users
@@ -57,7 +65,7 @@ io.on("connection", (socket) => {
 
 
     socket.on("startGame", () => {
-        io.emit("startGameForAllUsers")
+        io.emit("startGameForAllUsers")  
     })
 
     socket.on("passTonguePoints", (points) => {
@@ -77,14 +85,16 @@ io.on("connection", (socket) => {
             if (color == "yellow") return 2
             if (color == "green") return 4
             if (color == "black") return 7
+            if (color == "blue") return 0
             return 0
         }
 
         // Can fine tune
         const getSizeByColor = (color) => {
-            if (color == "yellow") return 10
-            if (color == "green") return 7
-            if (color == "black") return 4
+            if (color == "yellow") return 12
+            if (color == "green") return 9
+            if (color == "black") return 7
+            if (color == "blue") return 4
             return 0
         }
 
@@ -96,7 +106,8 @@ io.on("connection", (socket) => {
             }
             if (color == "yellow") return 0.2 * randomDirection()
             if (color == "green") return 0.5 * randomDirection()
-            if (color == "black") return 1 * randomDirection()
+            if (color == "black") return 0.8 * randomDirection()
+            if (color == "blue") return 1.1 * randomDirection() 
             return 0
         }
 
@@ -106,16 +117,18 @@ io.on("connection", (socket) => {
         }
           
         // Assign portion
-        const totalMarbles = 10
+        const totalMarbles = 100
         const yellowTotal = Math.floor(0.5 * totalMarbles)
-        const greenTotal = Math.floor(0.4 * totalMarbles)
-        const blackTotal = Math.floor(0.1 * totalMarbles)
+        const greenTotal = Math.floor(0.3 * totalMarbles)
+        const blackTotal = Math.floor(0.15 * totalMarbles)
+        const blueTotal = Math.floor(0.05 * totalMarbles)
         
 
         // Genreate marble objects
         const marbleColors = Array(yellowTotal).fill("yellow")
         .concat(Array(greenTotal).fill("green"))
         .concat(Array(blackTotal).fill("black"))
+        .concat(Array(blueTotal).fill("blue"))
 
 
         for (let i = 0; i < marbleColors.length; i++){
@@ -175,15 +188,11 @@ io.on("connection", (socket) => {
 
     socket.on("addUserPoints", (user, addedPoints) => {
         user = JSON.parse(user)
-
         onlineUsers.forEach(u => {
-            if (u.playerNo == user.playerNo) u.points += addedPoints
+            if (u.playerNo == user.playerNo) u.points += addedPoints * (u.isDoublePoints ? 2 : 1)
         })
-
         let returnUser = onlineUsers.find(u => u.playerNo == user.playerNo)
-
         io.emit("refreshUserPointsPanel", JSON.stringify(returnUser))
-
     })
 
     socket.on("deleteMarbles", (marbleIdxs) => {
@@ -196,6 +205,103 @@ io.on("connection", (socket) => {
         io.emit("deleteMarbles", JSON.stringify(marbleIdxs))
     })
 
+    socket.on("updateCooldown", (user, cooldown) => {
+        user = JSON.parse(user)
+        onlineUsers.forEach(u => {
+            if (u.playerNo == user.playerNo) u.cooldown = cooldown
+        })
+        let returnUser = onlineUsers.find(u => u.playerNo == user.playerNo)
+        io.emit("refreshUserAbilityPanel", JSON.stringify(returnUser))
+    })
+
+    socket.on("setUserFreezeAbility", (user, status) => {
+        user = JSON.parse(user)
+        onlineUsers.forEach(u => {
+            if (u.playerNo == user.playerNo) u.hasFreezeAbility = status // bool
+        })
+        let returnUser = onlineUsers.find(u => u.playerNo == user.playerNo)
+
+        io.emit("refreshUserAbilityPanel", JSON.stringify(returnUser))
+    })
+
+    socket.on("useFreezeAbilityOnOpponent", (user) => {
+        user = JSON.parse(user)
+
+        // If the user has no ability, then do nothing
+        if (!onlineUsers.find(u => u.playerNo == user.playerNo).hasFreezeAbility) return
+
+        // Update user statuses
+        onlineUsers.forEach(u => {
+            if (u.playerNo == user.playerNo) {
+                // Set the initiator status to false
+                u.hasFreezeAbility = false
+            } else {
+                // Set opponent to Frozen
+                u.isFrozen = true
+                io.emit("freezePlayer", JSON.stringify(u))
+
+                // Unfreeze after some time
+                setTimeout(() => {
+                    u.isFrozen = false
+                    io.emit("unFreezePlayer", JSON.stringify(u))
+                    io.emit("refreshUserAbilityPanel", JSON.stringify(u))
+                }, freezeAbilityTime*1000)
+            }
+
+            io.emit("refreshUserAbilityPanel", JSON.stringify(u))
+        })
+
+    })
+
+    socket.on("useDoublePointsAbility", (user) => {
+        user = JSON.parse(user)
+
+        onlineUsers.forEach(u => {
+            if (u.playerNo == user.playerNo) {
+                // Do nothing if frozen
+                if (u.isFrozen) return
+
+                if (u.isDoublePoints == false){
+                    u.isDoublePoints = true
+                    io.emit("toggleDoublePointsFrogImage", JSON.stringify(u), true)
+
+                    setTimeout(() => {
+                        u.isDoublePoints = false
+                        io.emit("refreshUserAbilityPanel", JSON.stringify(u))
+
+                        if (!u.isFrozen){
+                            io.emit("toggleDoublePointsFrogImage", JSON.stringify(u), false)
+                        }
+                    }, doublePointsAbilityTime * 1000)
+                }
+            }
+        })
+        let returnUser = onlineUsers.find(u => u.playerNo == user.playerNo)
+
+        io.emit("refreshUserAbilityPanel", JSON.stringify(returnUser))
+    })
+
+    socket.on("checkIfAnyUserHasWon", () => {
+        let hasAnyUserWon = false;
+
+        onlineUsers.forEach(u => {
+            if (u.points >= pointsToWin) hasAnyUserWon = true
+        })
+
+        io.emit("hasAnyUserWon", hasAnyUserWon)
+    })    
+
+    socket.on("resetGameSettings", () => {
+        onlineUsers.forEach(u => {
+            u.points = 0
+            u.isFrozen = false
+            u.hasFreezeAbility = false
+            u.isDoublePoints = false
+            u.cooldown = 0
+        })
+
+        io.emit("resetGameSettings")
+    })  
 
 });
 

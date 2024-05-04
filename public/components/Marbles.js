@@ -6,6 +6,10 @@ const Marble = (ctx, x, y, color, points, size, speedX, speedY) => {
         return points
     }
 
+    const getColor = () => {
+        return color
+    }
+
     const getMarbleXYR = () => {
         return {currX, currY, size}
     }
@@ -23,5 +27,5 @@ const Marble = (ctx, x, y, color, points, size, speedX, speedY) => {
         currY = targetY
     }
 
-    return { draw, getMarblePoints, updateMarblePosition, getMarbleXYR }
+    return { draw, getMarblePoints, updateMarblePosition, getMarbleXYR, getColor }
 }

@@ -14,8 +14,17 @@
     <div id="game-play-page">
         <section id="game-play-layout">
             <div id="game-play-header">
-                Hungry Frog Header
                 <button id="start-game-button">Temp button to start game</button>
+                <button id="reset-button">Reset game (Reset AFTER the game has ended)</button>
+                <div>
+                    Instruction: 
+                    Collect as much points as possible within 60s, or first reach 250 points to win. 
+                    Smaller balls move faster, but more points, vice versa.
+                    Tongue cooldown: 1s.
+                    Collect blue balls to get freeze ability. Press "F" to deploy and freeze the opponent for 6s.
+                    Your can CHEAT by presss "D", then you have double points for 6s. Unlimited times of CHEATING.   
+                </div>
+                
             </div>
 
             <div id="player-ability-panels">
@@ -23,11 +32,13 @@
                 <div id="p2-ability-panel" class="ability-panel"></div>
             </div>
 
-            <div id="game-arena"></div>
+            <div id="game-arena">
+                <div id="game-arena-text-box">Hungry Frog</div>
+            </div>
 
             <div id="game-status-panel">
                 <div id="p1-points-panel" class="points-panel"></div>
-                <div id="timer" class="time-panel">Timer</div>
+                <div id="timer" class="time-panel"></div>
                 <div id="p2-points-panel" class="points-panel"></div>
             </div>
         </section>
@@ -45,17 +56,12 @@
     <script src="components/Marbles.js"></script>
     <script src="components/PointsPanel.js"></script>
     <script src="components/AbilityPanel.js"></script>
+    <script src="components/TimePanel.js"></script>
     <script src="utils.js"></script>
     <script>
         $(function() {
             console.log("Init")
             Socket.connect()
-
-            // Items of the game
-            // let userFrog1, userFrog2;
-            // let pond;
-            // let spectatorFrogs = [];
-            // let marbles = []
 
             //Build fixed size canvas and context
             const CANVAS_WIDTH = 800
@@ -64,14 +70,16 @@
             arena.append(`<canvas id="game-arena-canvas" width="${CANVAS_WIDTH}" height="${CANVAS_HEIGHT}"></canvas>`)
             let canvas = $("#game-arena-canvas")
             let context = canvas.get(0).getContext("2d")
-            // Give background color
-            // context.fillStyle = '#755E56'; /* Replace with your desired background color */
-            // context.fillRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 
             // A tmp function that starts the game by click button
             $("#start-game-button").on("click", (e) => {
-                Socket.startGame() // Calls GameController.startGame()
+                Socket.startGame() // Also calls GameController.startGame()
             })
+
+            $("#reset-button").on("click", (e) => {
+                Socket.resetGameSettings() // Also calls GameController.resetGameSettings()
+            })
+
 
         });
     </script>

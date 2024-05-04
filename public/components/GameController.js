@@ -12,11 +12,36 @@ const GameController = (function() {
 
     let pointsPanel;
     let abilityPanel;
+    let timePanel;
+
+    const totalGameTime = 60;
+    let gameStartTime = 0;
+
+    let hasAnyUserWon = false;
+
+    const resetGameSettings = () => {
+        context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height); 
+
+        userFrog1 = userFrog2 = null
+        user1 = user1 = null
+        pond = pondDimensions = null
+        spectatorFrogs = []
+        marbles = {}
+        
+        if (pointsPanel) pointsPanel.emptyPanels()
+        if (abilityPanel) abilityPanel.emptyPanels()
+        if (timePanel) timePanel.emptyPanel()
+
+        gameStartTime = 0
+
+        hasAnyUserWon = false
+    }
 
 
     const startGame = () => {
         canvas = $("#game-arena-canvas")
         context = canvas.get(0).getContext("2d")
+        context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 
         // Load the game objects
         fetchData("/onlineUsers")
@@ -32,31 +57,82 @@ const GameController = (function() {
 
                 // Load the pond, and relate the two frogs to the pond.
                 pond = Pond(canvas, context, 75, 100, userFrog1, userFrog2)
-                pond.draw()        
+                pond.draw("Ready?")        
                 
                 // Generate Marbels in the pond on the server side , to provide the same view for both players
                 pondDimensions = pond.getPondParams()
                 Socket.generateMarbles(pondDimensions) // This triggers the loadMarbles() function
 
-                //Load points panels
+                // //Load points panels
                 pointsPanel = PointsPanel
-                pointsPanel.refreshUserPointsPanel(user1)
-                pointsPanel.refreshUserPointsPanel(user2)
 
-                // Load ability panels
+                // // Load ability panels
                 abilityPanel = AbilityPanel
-                abilityPanel.refreshUserAbilityPanel(user1)
-                abilityPanel.refreshUserAbilityPanel(user2)
+
+                // Load time panel
+                timePanel = TimePanel
                 
+            } else {
+                console.log("Need two users.....")
+                return
             }
         })
 
-        // Start main game loop after X seconds, to make sure the stuff is loaded
-        setTimeout(() => {
-            pond.enableClickablePond()
-            requestAnimationFrame(doFrame)
-        }, 3000)
+        // Build keydown handlers
+        /* Handle the keydown of using freeze ability */
+        $(document).on("keydown", function(event) {
 
+            /* Handle the key down */
+            let keyCode = event.keyCode || event.which
+
+            // Fake current user
+            const user = { playerNo: 1 } // Auth.getUser()
+
+            // Check if a frog is frozen
+            if (user.playerNo == 1) {
+                if (userFrog1.userFrogTongue.frogIsFrozen()) return
+            } else if (user.playerNo == 2) {
+                if (userFrog2.userFrogTongue.frogIsFrozen()) return
+            }
+            
+            // Press "F" to activate freeze ability
+            if (keyCode == 70){
+                console.log("Freeze")
+                Socket.useFreezeAbilityOnOpponent(user)
+            } 
+
+            // Press "D" to activate double points ability
+            if (keyCode == 68){
+                console.log("Double points")
+                Socket.useDoublePointsAbility(user)
+            } 
+        });
+
+        // Start main game loop after X seconds, to make sure the stuff is loaded
+        let countdownSeconds = 3
+        function countdown(seconds) {
+            var interval = setInterval(function() {
+                timePanel.updateStartGameTimer(seconds)
+                seconds--;
+                if (seconds < 0) {
+                    clearInterval(interval);
+                    // Enbale pond clickable
+                    pond.enableClickablePond()
+
+                    // Init points panel
+                    pointsPanel.refreshUserPointsPanel(user1)
+                    pointsPanel.refreshUserPointsPanel(user2)
+
+                    // Init ability panel
+                    abilityPanel.refreshUserAbilityPanel(user1)
+                    abilityPanel.refreshUserAbilityPanel(user2)
+
+                    // Start animation loop
+                    requestAnimationFrame(doFrame)
+                }
+            }, 1000);
+        }
+        countdown(countdownSeconds);        
     }
 
     const loadMarbles = (ms) => {
@@ -88,8 +164,50 @@ const GameController = (function() {
         }
     }
 
+    const freezeUserFrog = (user) => {
+        if (user.playerNo == 1) {
+            console.log("Froze frog 1")
+            userFrog1.userFrogTongue.freezeTongue()
+            userFrog1.loadFrog("s")
+        } else if (user.playerNo == 2) {
+            console.log("Froze frog 2")
+            userFrog2.userFrogTongue.freezeTongue()
+            userFrog2.loadFrog("s")
+        }
+    }
+
+    const unFreezeUserFrog = (user) => {
+        if (user.playerNo == 1) {
+            console.log("Unfroze frog 1")
+            userFrog1.userFrogTongue.unFreezeTongue()
+            userFrog1.loadFrog("n")
+        } else if (user.playerNo == 2) {
+            console.log("Unfroze frog 2")
+            userFrog2.userFrogTongue.unFreezeTongue()
+            userFrog2.loadFrog("n")
+        }
+    }
+
+    const toggleDoublePointsFrogImage = (user, isDoublePoints) => {
+        if (user.playerNo == 1) {
+            if (isDoublePoints) userFrog1.loadFrog("a")
+            else userFrog1.loadFrog("n")
+        } else if (user.playerNo == 2) {
+            if (isDoublePoints) userFrog2.loadFrog("a")
+            else userFrog2.loadFrog("n")
+        }
+    }
+
+    const setHasAnyUserWon = (status) => { hasAnyUserWon = status }
+
 
     const doFrame = (now) => {
+        // Timer
+        if (gameStartTime == 0) gameStartTime = now;
+        const gameTimeSoFar = now - gameStartTime;
+        const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+        timePanel.updateTimer(timeRemaining)
+
         // Clear the context
         context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 
@@ -97,13 +215,32 @@ const GameController = (function() {
         userFrog1.draw()
         userFrog2.draw()
         pond.draw()
+        // TBD: animate spetator frogs 
+        // TBD: animate another thing
+
 
         // Randomly update the coordinates of marbles in server, then draw
         Socket.randomizeMarbles(pondDimensions) // This also called the updateMarbles function
         drawMarbles()
 
+        // Check if a user has reached pointsToWin
+        Socket.checkIfAnyUserHasWon()
+
+        // Game over conditions
+        if (timeRemaining <= 0 || Object.keys(marbles).length == 0 || hasAnyUserWon){
+            timePanel.updateTimer("0")
+            pond.disableClickablePond()
+            gameOverHandler()
+            return
+        }
+
         // Looping
         requestAnimationFrame(doFrame)
+    }
+
+    const gameOverHandler = () => {
+        writeTextToTextBox("Game Over !!!")
+
     }
 
     const drawTongueOnCanvas = (points) => {
@@ -142,6 +279,8 @@ const GameController = (function() {
 
     // Core logic for calculating whether a marble is eaten
     const handleShootTongueToTarget = (points, user) => {
+        // Note: the "user" is only for getting the user.playerNo. The props in the user object are not updated.
+
         let addedPoints = 0;
         let marblesToRemove = []
 
@@ -151,16 +290,21 @@ const GameController = (function() {
             if (eat) {
                 addedPoints += marble.getMarblePoints()
                 marblesToRemove.push(marbleId)
+                if (marble.getColor() == "blue"){
+                    Socket.setUserFreezeAbility(user, true)
+                }
             }
         }
 
         Socket.addUserPoints(user, addedPoints)
         Socket.deleteMarbles(marblesToRemove)
 
-        console.log(addedPoints)
-        console.log(marblesToRemove)
+    }
+
+    const writeTextToTextBox = (text) => {
+        $("#game-arena-text-box").text(text)
     }
 
 
-    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles }
+    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog, toggleDoublePointsFrogImage, setHasAnyUserWon, resetGameSettings, writeTextToTextBox }
 })();

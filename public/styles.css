@@ -74,4 +74,9 @@ body {
 .time-panel {
     flex: 0.45;
     border: 1px solid; 
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
 }
