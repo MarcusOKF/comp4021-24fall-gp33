@@ -17,6 +17,8 @@ const GameController = (function() {
     const totalGameTime = 60;
     let gameStartTime = 0;
 
+    let hasAnyUserWon = false;
+
 
     const startGame = () => {
         canvas = $("#game-arena-canvas")
@@ -177,6 +179,8 @@ const GameController = (function() {
         }
     }
 
+    const setHasAnyUserWon = (status) => { hasAnyUserWon = status }
+
 
     const doFrame = (now) => {
         // Timer
@@ -184,12 +188,6 @@ const GameController = (function() {
         const gameTimeSoFar = now - gameStartTime;
         const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
         timePanel.updateTimer(timeRemaining)
-
-        // Times up, stop animation
-        if (timeRemaining <= 0){
-            gameOverHandler()
-            return
-        }
 
         // Clear the context
         context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
@@ -203,14 +201,24 @@ const GameController = (function() {
         Socket.randomizeMarbles(pondDimensions) // This also called the updateMarbles function
         drawMarbles()
 
+        // Check if a user has reached pointsToWin
+        Socket.checkIfAnyUserHasWon()
+
+        // Game over conditions
+        if (timeRemaining <= 0 || Object.keys(marbles).length == 0 || hasAnyUserWon){
+            timePanel.updateTimer("0")
+            pond.disableClickablePond()
+            gameOverHandler()
+            return
+        }
 
         // Looping
         requestAnimationFrame(doFrame)
     }
 
     const gameOverHandler = () => {
-        timePanel.updateTimer("0")
-        pond.disableClickablePond()
+        console.log("Game Over !!!")
+
     }
 
     const drawTongueOnCanvas = (points) => {
@@ -272,5 +280,5 @@ const GameController = (function() {
     }
 
 
-    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog, toggleDoublePointsFrogImage }
+    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog, toggleDoublePointsFrogImage, setHasAnyUserWon }
 })();

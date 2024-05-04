@@ -47,6 +47,7 @@ let marbles = {}
 
 const freezeAbilityTime = 6
 const doublePointsAbilityTime = 6
+const pointsToWin = 250;
 
 
 // Get all online users
@@ -279,6 +280,16 @@ io.on("connection", (socket) => {
 
         io.emit("refreshUserAbilityPanel", JSON.stringify(returnUser))
     })
+
+    socket.on("checkIfAnyUserHasWon", () => {
+        let hasAnyUserWon = false;
+
+        onlineUsers.forEach(u => {
+            if (u.points >= pointsToWin) hasAnyUserWon = true
+        })
+
+        io.emit("hasAnyUserWon", hasAnyUserWon)
+    })    
 
 });
 

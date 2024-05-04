@@ -62,6 +62,10 @@ const Socket = (function() {
             GameController.toggleDoublePointsFrogImage(JSON.parse(user), isDoublePoints)
         })
 
+        socket.on("hasAnyUserWon", (hasAnyUserWon) => {
+            GameController.setHasAnyUserWon(hasAnyUserWon)
+        })
+
     };
 
     const startGame = () => {
@@ -104,5 +108,9 @@ const Socket = (function() {
         socket.emit("useDoublePointsAbility", JSON.stringify(user))
     }
 
-    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility};
+    const checkIfAnyUserHasWon = () => {
+        socket.emit("checkIfAnyUserHasWon")
+    }
+
+    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon};
 })();
