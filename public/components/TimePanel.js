@@ -13,9 +13,26 @@ const TimePanel = (function(){
 
     const updateStartGameTimer = (seconds) => {
         if (seconds){
-            let timePanel = $("#timer")
-            timePanel.empty()
-            timePanel.append(`<div style="font-size:80px; color:red">${seconds}</div>`)
+            const countdownDivHTML = `<div style="font-size:80px; color:red">${seconds}</div>`
+            
+            $("#timer").empty()
+            $("#timer").append(countdownDivHTML)
+
+            $("#p1-ability-panel").empty()
+            $("#p1-ability-panel").append(countdownDivHTML)
+
+
+            $("#p2-ability-panel").empty()
+            $("#p2-ability-panel").append(countdownDivHTML)
+
+
+            $("#p1-points-panel").empty()
+            $("#p1-points-panel").append(countdownDivHTML)
+
+
+            $("#p2-points-panel").empty()
+            $("#p2-points-panel").append(countdownDivHTML)
+
         }
     }
 

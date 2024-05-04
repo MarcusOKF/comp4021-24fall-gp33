@@ -42,19 +42,14 @@ const GameController = (function() {
                 pondDimensions = pond.getPondParams()
                 Socket.generateMarbles(pondDimensions) // This triggers the loadMarbles() function
 
-                //Load points panels
+                // //Load points panels
                 pointsPanel = PointsPanel
-                pointsPanel.refreshUserPointsPanel(user1)
-                pointsPanel.refreshUserPointsPanel(user2)
 
-                // Load ability panels
+                // // Load ability panels
                 abilityPanel = AbilityPanel
-                abilityPanel.refreshUserAbilityPanel(user1)
-                abilityPanel.refreshUserAbilityPanel(user2)
 
                 // Load time panel
                 timePanel = TimePanel
-                // timePanel.updateTimer(totalGameTime)
                 
             } else {
                 console.log("Need two users.....")
@@ -67,13 +62,23 @@ const GameController = (function() {
 
         function countdown(seconds) {
             var interval = setInterval(function() {
-                TimePanel.updateStartGameTimer(seconds)
-                console.log(seconds);
+                timePanel.updateStartGameTimer(seconds)
+
                 seconds--;
               
                 if (seconds < 0) {
                     clearInterval(interval);
+                    // Enbale pond clickable
                     pond.enableClickablePond()
+
+                    // Init points panel
+                    pointsPanel.refreshUserPointsPanel(user1)
+                    pointsPanel.refreshUserPointsPanel(user2)
+
+                    // Init ability panel
+                    abilityPanel.refreshUserAbilityPanel(user1)
+                    abilityPanel.refreshUserAbilityPanel(user2)
+
                     requestAnimationFrame(doFrame)
                 }
             }, 1000);
