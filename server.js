@@ -252,6 +252,34 @@ io.on("connection", (socket) => {
 
     })
 
+    socket.on("useDoublePointsAbility", (user) => {
+        user = JSON.parse(user)
+
+        onlineUsers.forEach(u => {
+            if (u.playerNo == user.playerNo) {
+                // Do nothing if frozen
+                if (u.isFrozen) return
+
+                if (u.isDoublePoints == false){
+                    u.isDoublePoints = true
+                    io.emit("toggleDoublePointsFrogImage", JSON.stringify(u), true)
+
+                    setTimeout(() => {
+                        u.isDoublePoints = false
+                        io.emit("refreshUserAbilityPanel", JSON.stringify(u))
+
+                        if (!u.isFrozen){
+                            io.emit("toggleDoublePointsFrogImage", JSON.stringify(u), false)
+                        }
+                    }, doublePointsAbilityTime * 1000)
+                }
+            }
+        })
+        let returnUser = onlineUsers.find(u => u.playerNo == user.playerNo)
+
+        io.emit("refreshUserAbilityPanel", JSON.stringify(returnUser))
+    })
+
 });
 
 // Use a web server to listen at port 8000

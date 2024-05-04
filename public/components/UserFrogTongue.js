@@ -1,5 +1,6 @@
 const UserFrogTongue = (ctx, x, y, user) => {
-    const coolDownSeconds = 1 //Note: Actually it is coolDownSeconds+1
+    let coolDownSeconds = 1 //Note: Actually it is coolDownSeconds+1
+    coolDownSeconds -= 1 // Adjustment
     let isCooldown = false
     let frozen = false
 

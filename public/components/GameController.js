@@ -83,6 +83,7 @@ const GameController = (function() {
             // Press "D" to activate double points ability
             if (keyCode == 68){
                 console.log("Double points")
+                Socket.useDoublePointsAbility(user)
             } 
         });
 
@@ -163,6 +164,16 @@ const GameController = (function() {
             console.log("Unfroze frog 2")
             userFrog2.userFrogTongue.unFreezeTongue()
             userFrog2.loadFrog("n")
+        }
+    }
+
+    const toggleDoublePointsFrogImage = (user, isDoublePoints) => {
+        if (user.playerNo == 1) {
+            if (isDoublePoints) userFrog1.loadFrog("a")
+            else userFrog1.loadFrog("n")
+        } else if (user.playerNo == 2) {
+            if (isDoublePoints) userFrog2.loadFrog("a")
+            else userFrog2.loadFrog("n")
         }
     }
 
@@ -261,5 +272,5 @@ const GameController = (function() {
     }
 
 
-    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog }
+    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog, toggleDoublePointsFrogImage }
 })();

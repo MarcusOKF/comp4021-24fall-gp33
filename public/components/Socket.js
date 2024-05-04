@@ -57,6 +57,11 @@ const Socket = (function() {
         socket.on("unFreezePlayer", (user) => {
             GameController.unFreezeUserFrog(JSON.parse(user))
         })
+
+        socket.on("toggleDoublePointsFrogImage", (user, isDoublePoints) => {
+            GameController.toggleDoublePointsFrogImage(JSON.parse(user), isDoublePoints)
+        })
+
     };
 
     const startGame = () => {
@@ -95,5 +100,9 @@ const Socket = (function() {
         socket.emit("useFreezeAbilityOnOpponent", JSON.stringify(initiator))
     }
 
-    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent};
+    const useDoublePointsAbility = (user) => {
+        socket.emit("useDoublePointsAbility", JSON.stringify(user))
+    }
+
+    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility};
 })();

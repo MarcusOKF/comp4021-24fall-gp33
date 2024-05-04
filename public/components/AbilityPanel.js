@@ -11,8 +11,8 @@ const AbilityPanel = (function(){
 
         targetPanel.append(`<div>Player ${user.playerNo}: ${user.name}</div>`)
         targetPanel.append(`<div style="font-size:30px;">Cooldown: ${user.cooldown}</div>`)
-        targetPanel.append(`<div style="font-size:30px; color:${user.isFrozen ? "blue" : "grey"}">🥶Frozen</div>`)
         targetPanel.append(`<div style="font-size:30px; color:${user.hasFreezeAbility ? "blue" : "grey"}">🧊Freeze Ability</div>`)
+        targetPanel.append(`<div style="font-size:30px; color:${user.isFrozen ? "blue" : "grey"}">🥶Frozen</div>`)
         if (user.isDoublePoints) targetPanel.append(`<div style="font-size:30px; color:${user.isDoublePoints ? "red" : "grey"}">🔥Double Points</div>`)
 
     }
