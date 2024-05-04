@@ -57,15 +57,41 @@ const GameController = (function() {
             }
         })
 
+        // Build keydown handlers
+        /* Handle the keydown of using freeze ability */
+        $(document).on("keydown", function(event) {
+
+            /* Handle the key down */
+            let keyCode = event.keyCode || event.which
+
+            // Fake current user
+            const user = { playerNo: 1 } // Auth.getUser()
+
+            // Check if a frog is frozen
+            if (user.playerNo == 1) {
+                if (userFrog1.userFrogTongue.frogIsFrozen()) return
+            } else if (user.playerNo == 2) {
+                if (userFrog2.userFrogTongue.frogIsFrozen()) return
+            }
+            
+            // Press "F" to activate freeze ability
+            if (keyCode == 70){
+                console.log("Freeze")
+                Socket.useFreezeAbilityOnOpponent(user)
+            } 
+
+            // Press "D" to activate double points ability
+            if (keyCode == 68){
+                console.log("Double points")
+            } 
+        });
+
         // Start main game loop after X seconds, to make sure the stuff is loaded
         let countdownSeconds = 3
-
         function countdown(seconds) {
             var interval = setInterval(function() {
                 timePanel.updateStartGameTimer(seconds)
-
                 seconds--;
-              
                 if (seconds < 0) {
                     clearInterval(interval);
                     // Enbale pond clickable
@@ -79,11 +105,11 @@ const GameController = (function() {
                     abilityPanel.refreshUserAbilityPanel(user1)
                     abilityPanel.refreshUserAbilityPanel(user2)
 
+                    // Start animation loop
                     requestAnimationFrame(doFrame)
                 }
             }, 1000);
         }
-          
         countdown(countdownSeconds);        
     }
 
@@ -113,6 +139,30 @@ const GameController = (function() {
     const deleteMarbles = (marbleIdxs) => {
         for (let idx of marbleIdxs){
             delete marbles[idx]
+        }
+    }
+
+    const freezeUserFrog = (user) => {
+        if (user.playerNo == 1) {
+            console.log("Froze frog 1")
+            userFrog1.userFrogTongue.freezeTongue()
+            userFrog1.loadFrog("s")
+        } else if (user.playerNo == 2) {
+            console.log("Froze frog 2")
+            userFrog2.userFrogTongue.freezeTongue()
+            userFrog2.loadFrog("s")
+        }
+    }
+
+    const unFreezeUserFrog = (user) => {
+        if (user.playerNo == 1) {
+            console.log("Unfroze frog 1")
+            userFrog1.userFrogTongue.unFreezeTongue()
+            userFrog1.loadFrog("n")
+        } else if (user.playerNo == 2) {
+            console.log("Unfroze frog 2")
+            userFrog2.userFrogTongue.unFreezeTongue()
+            userFrog2.loadFrog("n")
         }
     }
 
@@ -188,6 +238,8 @@ const GameController = (function() {
 
     // Core logic for calculating whether a marble is eaten
     const handleShootTongueToTarget = (points, user) => {
+        // Note: the "user" is only for getting the user.playerNo. The props in the user object are not updated.
+
         let addedPoints = 0;
         let marblesToRemove = []
 
@@ -197,6 +249,9 @@ const GameController = (function() {
             if (eat) {
                 addedPoints += marble.getMarblePoints()
                 marblesToRemove.push(marbleId)
+                if (marble.getColor() == "blue"){
+                    Socket.setUserFreezeAbility(user, true)
+                }
             }
         }
 
@@ -206,5 +261,5 @@ const GameController = (function() {
     }
 
 
-    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles }
+    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog }
 })();

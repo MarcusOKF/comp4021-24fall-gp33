@@ -45,6 +45,18 @@ const Socket = (function() {
         socket.on("refreshUserPointsPanel", (user) => {
             PointsPanel.refreshUserPointsPanel(JSON.parse(user))
         })
+
+        socket.on("refreshUserAbilityPanel", (user) => {
+            AbilityPanel.refreshUserAbilityPanel(JSON.parse(user))
+        })
+
+        socket.on("freezePlayer", (user) => {
+            GameController.freezeUserFrog(JSON.parse(user))
+        })
+
+        socket.on("unFreezePlayer", (user) => {
+            GameController.unFreezeUserFrog(JSON.parse(user))
+        })
     };
 
     const startGame = () => {
@@ -71,5 +83,17 @@ const Socket = (function() {
         socket.emit("addUserPoints", JSON.stringify(user), addedPoints)
     }
 
-    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles};
+    const updateCooldown = (user, cooldown) => {
+        socket.emit("updateCooldown", JSON.stringify(user), cooldown)
+    }
+
+    const setUserFreezeAbility = (user, state) => {
+        socket.emit("setUserFreezeAbility", JSON.stringify(user), state)
+    }
+
+    const useFreezeAbilityOnOpponent = (initiator) => {
+        socket.emit("useFreezeAbilityOnOpponent", JSON.stringify(initiator))
+    }
+
+    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent};
 })();
