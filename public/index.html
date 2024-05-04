@@ -10,12 +10,41 @@
 </head>
 <body>
 
+    <!-- Game Front Page -->
+    <div id="signin-overlay" class="overlay row">
+        <div class="content shadow row">
+            <form id="signin-form" class="col">
+                <div class="caption">SIGN IN WITH YOUR ACCOUNT</div>
+                <div class="spacer-0"></div>
+                <input id="signin-username" placeholder="Enter your username"></input>
+                <input id="signin-password" type="password" placeholder="Enter your password"></input>
+                <div class="spacer-0"></div>
+                <button type="submit">Sign In</button>
+                <div id="signin-message" class="warning center"></div>
+                <div class="spacer-grow"></div>
+            </form>
+
+            <div class="spacer-1"></div>
+
+            <form id="register-form" class="col">
+                <div class="caption">OR, REGISTER IF YOU DO NOT HAVE ONE</div>
+                <div class="spacer-0"></div>
+                <input id="register-username" maxlength="10" placeholder="Enter your username"></input>
+                <input id="register-password" type="password" placeholder="Enter your password"></input>
+                <input id="register-confirm" type="password" placeholder="Enter your password again"></input>
+                <div class="spacer-0"></div>
+                <button type="submit">Register</button>
+                <div id="register-message" class="warning center"></div>
+            </form>
+        </div>
+    </div>
+
     <!-- Game Play Page -->
     <div id="game-play-page">
         <section id="game-play-layout">
             <div id="game-play-header">
-                <button id="start-game-button">Temp button to start game</button>
-                <button id="reset-button">Reset game (Reset AFTER the game has ended)</button>
+                <!-- <button id="start-game-button">Temp button to start game</button>
+                <button id="reset-button">Reset game (Reset AFTER the game has ended)</button> -->
                 <div>
                     Instruction: 
                     Collect as much points as possible within 60s, or first reach 250 points to win. 
