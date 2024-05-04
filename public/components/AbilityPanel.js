@@ -17,5 +17,10 @@ const AbilityPanel = (function(){
 
     }
 
-    return { refreshUserAbilityPanel }
+    const emptyPanels = () => {
+        $("#p1-ability-panel").empty()
+        $("#p2-ability-panel").empty()
+    }
+
+    return { refreshUserAbilityPanel, emptyPanels }
 })()

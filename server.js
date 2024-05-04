@@ -291,6 +291,18 @@ io.on("connection", (socket) => {
         io.emit("hasAnyUserWon", hasAnyUserWon)
     })    
 
+    socket.on("resetGameSettings", () => {
+        onlineUsers.forEach(u => {
+            u.points = 0
+            u.isFrozen = false
+            u.hasFreezeAbility = false
+            u.isDoublePoints = false
+            u.cooldown = 0
+        })
+
+        io.emit("resetGameSettings")
+    })  
+
 });
 
 // Use a web server to listen at port 8000

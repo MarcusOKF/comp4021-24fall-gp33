@@ -66,6 +66,10 @@ const Socket = (function() {
             GameController.setHasAnyUserWon(hasAnyUserWon)
         })
 
+        socket.on("resetGameSettings",() => {
+            GameController.resetGameSettings()
+        })
+
     };
 
     const startGame = () => {
@@ -112,5 +116,9 @@ const Socket = (function() {
         socket.emit("checkIfAnyUserHasWon")
     }
 
-    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon};
+    const resetGameSettings = () => {
+        socket.emit("resetGameSettings")
+    }
+
+    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
 })();

@@ -15,6 +15,7 @@
         <section id="game-play-layout">
             <div id="game-play-header">
                 <button id="start-game-button">Temp button to start game</button>
+                <button id="reset-button">Reset game (Reset AFTER the game has ended)</button>
                 <div>
                     Instruction: 
                     Collect as much points as possible within 60s, or first reach 250 points to win. 
@@ -31,7 +32,9 @@
                 <div id="p2-ability-panel" class="ability-panel"></div>
             </div>
 
-            <div id="game-arena"></div>
+            <div id="game-arena">
+                <div id="game-arena-text-box">Hungry Frog</div>
+            </div>
 
             <div id="game-status-panel">
                 <div id="p1-points-panel" class="points-panel"></div>
@@ -70,8 +73,13 @@
 
             // A tmp function that starts the game by click button
             $("#start-game-button").on("click", (e) => {
-                Socket.startGame() // Calls GameController.startGame()
+                Socket.startGame() // Also calls GameController.startGame()
             })
+
+            $("#reset-button").on("click", (e) => {
+                Socket.resetGameSettings() // Also calls GameController.resetGameSettings()
+            })
+
 
         });
     </script>

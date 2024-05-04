@@ -14,5 +14,10 @@ const PointsPanel = (function(){
 
     }
 
-    return { refreshUserPointsPanel }
+    const emptyPanels = () => {
+        $("#p1-points-panel").empty()
+        $("#p2-points-panel").empty()
+    }
+
+    return { refreshUserPointsPanel, emptyPanels }
 })()

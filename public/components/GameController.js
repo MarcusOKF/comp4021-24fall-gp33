@@ -19,10 +19,29 @@ const GameController = (function() {
 
     let hasAnyUserWon = false;
 
+    const resetGameSettings = () => {
+        context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height); 
+
+        userFrog1 = userFrog2 = null
+        user1 = user1 = null
+        pond = pondDimensions = null
+        spectatorFrogs = []
+        marbles = {}
+        
+        if (pointsPanel) pointsPanel.emptyPanels()
+        if (abilityPanel) abilityPanel.emptyPanels()
+        if (timePanel) timePanel.emptyPanel()
+
+        gameStartTime = 0
+
+        hasAnyUserWon = false
+    }
+
 
     const startGame = () => {
         canvas = $("#game-arena-canvas")
         context = canvas.get(0).getContext("2d")
+        context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
 
         // Load the game objects
         fetchData("/onlineUsers")
@@ -196,6 +215,9 @@ const GameController = (function() {
         userFrog1.draw()
         userFrog2.draw()
         pond.draw()
+        // TBD: animate spetator frogs 
+        // TBD: animate another thing
+
 
         // Randomly update the coordinates of marbles in server, then draw
         Socket.randomizeMarbles(pondDimensions) // This also called the updateMarbles function
@@ -217,7 +239,7 @@ const GameController = (function() {
     }
 
     const gameOverHandler = () => {
-        console.log("Game Over !!!")
+        writeTextToTextBox("Game Over !!!")
 
     }
 
@@ -279,6 +301,10 @@ const GameController = (function() {
 
     }
 
+    const writeTextToTextBox = (text) => {
+        $("#game-arena-text-box").text(text)
+    }
 
-    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog, toggleDoublePointsFrogImage, setHasAnyUserWon }
+
+    return { startGame, drawTongueOnCanvas, loadMarbles, updateMarbles, handleShootTongueToTarget, deleteMarbles, freezeUserFrog, unFreezeUserFrog, toggleDoublePointsFrogImage, setHasAnyUserWon, resetGameSettings, writeTextToTextBox }
 })();

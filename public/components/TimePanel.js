@@ -36,6 +36,10 @@ const TimePanel = (function(){
         }
     }
 
+    const emptyPanel = () => {
+        $("#timer").empty()
+    }
 
-    return { updateTimer, updateStartGameTimer }
+
+    return { updateTimer, updateStartGameTimer, emptyPanel }
 })()
