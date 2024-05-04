@@ -11,31 +11,72 @@
 <body>
 
     <!-- Game Front Page -->
-    <div id="signin-overlay" class="overlay row">
-        <div class="content shadow row">
-            <form id="signin-form" class="col">
-                <div class="caption">SIGN IN WITH YOUR ACCOUNT</div>
-                <div class="spacer-0"></div>
-                <input id="signin-username" placeholder="Enter your username"></input>
-                <input id="signin-password" type="password" placeholder="Enter your password"></input>
-                <div class="spacer-0"></div>
-                <button type="submit">Sign In</button>
-                <div id="signin-message" class="warning center"></div>
-                <div class="spacer-grow"></div>
-            </form>
+    <div id="signin-overlay" class="overlay">
+        <div class="content shadow">
+            <div class="form-container">
+                <div>
+                    <form id="signin-form">
+                        <div class="caption">SIGN IN WITH YOUR ACCOUNT</div>
+                        <div class="spacer-0"></div>
+                        <input id="signin-username" placeholder="Enter your username"></input>
+                        <input id="signin-password" type="password" placeholder="Enter your password"></input>
+                        <div class="spacer-0"></div>
+                        <button type="submit">Sign In</button>
+                        <div id="signin-message" class="warning center"></div>
+                        <div class="spacer-grow"></div>
+                    </form>
 
-            <div class="spacer-1"></div>
+                    <div id="sign-out-container">
+                        <div id="sign-out-caption">Signed in as:</div>
+                        <div id="signed-in-username">???</div>
+                        <button id="signout-btn">Sign Out</button>
+                    </div>
+                </div>
 
-            <form id="register-form" class="col">
-                <div class="caption">OR, REGISTER IF YOU DO NOT HAVE ONE</div>
-                <div class="spacer-0"></div>
-                <input id="register-username" maxlength="10" placeholder="Enter your username"></input>
-                <input id="register-password" type="password" placeholder="Enter your password"></input>
-                <input id="register-confirm" type="password" placeholder="Enter your password again"></input>
-                <div class="spacer-0"></div>
-                <button type="submit">Register</button>
-                <div id="register-message" class="warning center"></div>
-            </form>
+                <div id="game-title">
+                    <span>Hungry</span>
+                    <span>Frog</span>
+                </div>
+    
+                <form id="register-form">
+                    <div class="caption">REGISTER IF YOU DO NOT HAVE ONE</div>
+                    <div class="spacer-0"></div>
+                    <input id="register-username" maxlength="10" placeholder="Enter your username"></input>
+                    <input id="register-name" maxlength="16" placeholder="Enter your name"></input>
+                    <input id="register-password" type="password" placeholder="Enter your password"></input>
+                    <input id="register-confirm" type="password" placeholder="Enter your password again"></input>
+                    <div class="spacer-0"></div>
+                    <button type="submit">Register</button>
+                    <div id="register-message" class="warning center"></div>
+                </form>
+            </div>
+
+            <div id="game-description-instruction">
+                    Collect as much points as possible within 60s, or first reach 250 points to win. 
+                    Smaller balls move faster, but more points, vice versa.
+                    Tongue cooldown: 1s.
+                    Collect blue balls to get freeze ability. Press "F" to deploy and freeze the opponent for 6s.
+                    Your can CHEAT by presss "D", then you have double points for 6s. Unlimited times of CHEATING.
+            </div>
+
+            <div id="player-selection-container">
+                <div id="player1-container">
+                    <span class="player-title">Player 1:</span>
+                    <span id="player1-name">???</span>
+                    <button id="join-player1-btn" class="player-join-btn">Join</button>
+                </div>
+                <div id="player2-container">
+                    <span class="player-title">Player 2:</span>
+                    <span id="player2-name">???</span>
+                    <button id="join-player2-btn" class="player-join-btn">Join</button>
+                </div>
+            </div>
+            
+            <div id="online-user-panel">
+                <span>Online users: </span>
+                <span id="online-user-list">name1, name1, name1, name1, name1, name1</span>
+            </div>
+
         </div>
     </div>
 
@@ -43,17 +84,8 @@
     <div id="game-play-page">
         <section id="game-play-layout">
             <div id="game-play-header">
-                <!-- <button id="start-game-button">Temp button to start game</button>
-                <button id="reset-button">Reset game (Reset AFTER the game has ended)</button> -->
-                <div>
-                    Instruction: 
-                    Collect as much points as possible within 60s, or first reach 250 points to win. 
-                    Smaller balls move faster, but more points, vice versa.
-                    Tongue cooldown: 1s.
-                    Collect blue balls to get freeze ability. Press "F" to deploy and freeze the opponent for 6s.
-                    Your can CHEAT by presss "D", then you have double points for 6s. Unlimited times of CHEATING.   
-                </div>
-                
+                <button id="start-game-button">Temp button to start game</button>
+                <button id="reset-button">Reset game (Reset AFTER the game has ended)</button>
             </div>
 
             <div id="player-ability-panels">
