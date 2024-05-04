@@ -1,5 +1,6 @@
 /* Basic */
 body {
+    user-select: none;
     min-width: 600px;
     min-height: 300px;
     height: 100vh;
