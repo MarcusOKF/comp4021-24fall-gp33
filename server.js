@@ -263,6 +263,11 @@ io.on("connection", (socket) => {
                     io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
                 }
             }
+
+            // check is there enough player, if yes, start the game
+            if (onlineUsers.length == 2) {
+                io.emit("startGameForAllUsers")  
+            }
         }
     })
 

@@ -106,7 +106,6 @@ const PlayerSelectionPanel = (function () {
 		const player1Name = $('#player1-name')
 		const player2Name = $('#player2-name')
 
-		console.log('status: ', status)
 		player1Name.text(status.player1.name)
 		player2Name.text(status.player2.name)
 	}
@@ -254,5 +253,13 @@ const UI = (function () {
 		}
 	}
 
-	return { getUserDisplay, initialize }
+	const hideFrontPage = function () {
+		$('#signin-overlay').hide()
+	}
+
+	const showFrontPage = function () {
+		$('#signin-overlay').show()
+	}
+
+	return { getUserDisplay, initialize, hideFrontPage, showFrontPage }
 })()

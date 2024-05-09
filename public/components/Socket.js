@@ -67,6 +67,7 @@ const Socket = (function() {
 
         socket.on("startGameForAllUsers", () => {
             console.log("Start game for users")
+            UI.hideFrontPage()
             GameController.startGame()
         })
 
@@ -111,6 +112,7 @@ const Socket = (function() {
         })
 
         socket.on("resetGameSettings",() => {
+            UI.showFrontPage()
             GameController.resetGameSettings()
         })
 
