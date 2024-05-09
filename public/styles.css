@@ -42,7 +42,8 @@ body {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	color: #e31ad6;
+	color: #4c1ae33c;
+	animation: rainbow 5s linear infinite;
 	font-size: 600%;
 	margin: 0.5rem;
 	font-family: 'Brush Script MT', cursive;
