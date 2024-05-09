@@ -1,10 +1,21 @@
 const Authentication = (function () {
 	// This stores the current signed-in user
 	let user = null
+	let playerID = -1
 
 	// This function gets the signed-in user
 	const getUser = function () {
 		return user
+	}
+
+	// This function updates the user id
+	const setPlayerID = function (newID) {
+		playerID = newID
+	}
+
+	// This function gets the user id
+	const getPlayerID = function () {
+		return playerID
 	}
 
 	// This function sends a sign-in request to the server
@@ -70,5 +81,5 @@ const Authentication = (function () {
 			})
 	}
 
-	return { getUser, signin, validate, signout }
+	return { getUser, setPlayerID, getPlayerID, signin, validate, signout }
 })()

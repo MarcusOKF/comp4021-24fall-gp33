@@ -37,6 +37,13 @@ const Socket = (function() {
             PlayerSelectionPanel.updatePlayerStatus(playersInfo)
 		})
 
+        // Update session player ID
+        socket.on('update session player ID', (data) => {
+            playerID = (JSON.parse(data)).playerID
+
+            Authentication.setPlayerID(playerID)
+        })
+
         // Set up the users event
 		socket.on('users', (onlineUsers) => {
 			onlineUsers = JSON.parse(onlineUsers)
@@ -128,6 +135,7 @@ const Socket = (function() {
 		socket = null
         OnlineUsersPanel.hidePanel()
         PlayerSelectionPanel.hide()
+        Authentication.setPlayerID(-1)
 	}
 
     const startGame = () => {

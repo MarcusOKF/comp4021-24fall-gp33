@@ -172,6 +172,27 @@ app.get('/signout', (req, res) => {
 	})
 })
 
+// Check player ID
+app.get('/playerID', (req, res) => {
+    const player1Status = getInfoWithNumber(1)
+    const player2Status = getInfoWithNumber(2)
+    const currentUser = req.session.user
+
+    if (currentUser.username == player1Status.username) {
+        console.log('get player ID: 1')
+        res.json({ id: 1 })
+        return
+    }
+    if (currentUser.username == player2Status.username) {
+        console.log('get player ID: 2')
+        res.json({ id: 2 })
+        return
+    }
+
+    console.log('get player ID: -1 !!!ERROR!!!')
+    res.json({ id: -1 })
+})
+
 // Get all online users
 app.get("/onlineUsers", (req, res)=>{
     console.log('server: getting all online users...')
@@ -244,6 +265,7 @@ io.on("connection", (socket) => {
                             cooldown: 0
                         }
                     )
+                    socket.emit('update session player ID', JSON.stringify({ playerID: 1 }))
                     io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
                 }
             } else if (number == 2) {
@@ -260,6 +282,7 @@ io.on("connection", (socket) => {
                             cooldown: 0
                         }
                     )
+                    socket.emit('update session player ID', JSON.stringify({ playerID: 2 }))
                     io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
                 }
             }
