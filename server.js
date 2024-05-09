@@ -19,6 +19,16 @@ app.use(express.static("public"));
 // Use the json middleware to parse JSON data
 app.use(express.json());
 
+// Use the session middleware to maintain sessions
+const gameSession = session({
+	secret: 'hungryFrog',
+	resave: false,
+	saveUninitialized: false,
+	rolling: true,
+	cookie: { maxAge: 300000 },
+})
+app.use(gameSession)
+
 
 let onlineUsers = [
     {
@@ -50,15 +60,144 @@ const doublePointsAbilityTime = 6
 const pointsToWin = 250;
 
 
+// This helper function checks whether the text only contains word characters
+function containWordCharsOnly(text) {
+	return /^\w+$/.test(text)
+}
+
+// Handle the /register endpoint
+app.post('/register', (req, res) => {
+	// Get the JSON data from the body
+	const { username, name, password } = req.body
+    
+	const users = JSON.parse(fs.readFileSync('./data/users.json'))
+    
+	if (!username || !name || !password) {
+		res.json({
+			status: 'error',
+			error: 'Username / name / password cannot be empty.',
+		})
+		return
+	}
+	if (!containWordCharsOnly(username)) {
+		res.json({
+			status: 'error',
+			error: 'Username should contain only underscores, letters or numbers.',
+		})
+		return
+	}
+	if (username in users) {
+		res.json({
+			status: 'error',
+			error: 'Username already taken.',
+		})
+		return
+	}
+    
+	const hash = bcrypt.hashSync(password, 10)
+	users[username] = { name, password: hash }
+    
+	fs.writeFileSync('./data/users.json', JSON.stringify(users, null, ' '))
+
+	res.json({ status: 'success' })
+})
+
+// Handle the /signin endpoint
+app.post('/signin', (req, res) => {
+	// Get the JSON data from the body
+	const { username, password } = req.body
+    
+	const users = JSON.parse(fs.readFileSync('./data/users.json'))
+    
+	if (username in users == false) {
+		res.json({
+			status: 'error',
+			error: 'Incorrect username / password.',
+		})
+		return
+	}
+	const user = users[username]
+	if (!bcrypt.compareSync(password, user.password)) {
+		res.json({
+			status: 'error',
+			error: 'Incorrect username / password.',
+		})
+		return
+	}
+    
+	req.session.user = { username, name: user.name }
+	res.json({
+		status: 'success',
+		user: { username, name: user.name },
+	})
+})
+
+// Handle the /validate endpoint
+app.get('/validate', (req, res) => {
+	if (!req.session.user) {
+		res.json({
+			status: 'error',
+			error: 'Session not found.',
+		})
+		return
+	}
+    
+	res.json({
+		status: 'success',
+		user: req.session.user,
+	})
+})
+
+// Handle the /signout endpoint
+app.get('/signout', (req, res) => {
+	delete req.session.user
+
+	res.json({
+		status: 'success',
+	})
+})
+
 // Get all online users
 app.get("/onlineUsers", (req, res)=>{
     res.json(onlineUsers)
 })
 
+// Handle online user list in the waiting room
+const waitingUsers = {}
+
+// Tell the Socket.IO server to use the session object for each socket
+io.use((socket, next) => {
+	gameSession(socket.request, {}, next)
+})
+
 // Socket related code
 io.on("connection", (socket) => {
     // Add a new user to the online user list
-    // To de done
+	if (socket.request.session.user) {
+		const user = socket.request.session.user
+		const { username } = user
+		waitingUsers[username] = user
+		io.emit('add user', JSON.stringify(user))
+	}
+
+    // User sign out
+	socket.on('disconnect', () => {
+		// Remove the user from the online user list
+		if (socket.request.session.user) {
+			const user = socket.request.session.user
+			const { username } = user
+			if (waitingUsers[username]) {
+				delete waitingUsers[username]
+			}
+			io.emit('remove user', JSON.stringify(user))
+		}
+	})
+
+    // Client side request online user list
+	socket.on('get users', () => {
+		// Send the online users to the browser
+		socket.emit('users', JSON.stringify(waitingUsers))
+	})
 
     // Broadcast to all users 
     io.emit("broadcastNewConnection")
