@@ -17,9 +17,25 @@ const Socket = (function() {
 
 			// Get the online user list
 			socket.emit('get users')
+            // Get the player selection status
+			socket.emit('get player1&2 status')
+
             OnlineUsersPanel.showPanel()
             PlayerSelectionPanel.show()
         });
+
+        socket.on('update player1&2 status', (status) => {
+			status = JSON.parse(status)
+
+            PlayerSelectionPanel.updatePlayerStatus(status)
+        })
+
+        // Show player 1 & 2 status
+		socket.on('player1&2 status', (playersInfo) => {
+			playersInfo = JSON.parse(playersInfo)
+
+            PlayerSelectionPanel.updatePlayerStatus(playersInfo)
+		})
 
         // Set up the users event
 		socket.on('users', (onlineUsers) => {
@@ -100,6 +116,10 @@ const Socket = (function() {
 
     };
 
+    const joinPlayer = function (number) {
+        socket.emit('join player', number)
+    }
+
     // This function disconnects the socket from the server
 	const disconnect = function () {
 		socket.disconnect()
@@ -156,5 +176,5 @@ const Socket = (function() {
         socket.emit("resetGameSettings")
     }
 
-    return { getSocket, connect, disconnect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
+    return { getSocket, connect, disconnect, joinPlayer, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
 })();

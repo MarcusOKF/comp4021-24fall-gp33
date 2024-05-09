@@ -29,29 +29,44 @@ const gameSession = session({
 })
 app.use(gameSession)
 
+// helper function for getting username & name in the onlineUsers array
+function getInfoWithNumber(playerNumber) {
+    let username = null
+    let name = '???'
 
-let onlineUsers = [
-    {
-        username: "tom",
-        playerNo: 2,
-        name: "Tom Chan",
-        points: 0,
-        isFrozen: false,
-        hasFreezeAbility: false,
-        isDoublePoints: false,
-        cooldown: 0
-    },
-    {
-        username: "sam",
-        playerNo: 1,
-        name: "Sam Wong",
-        points: 0,
-        isFrozen: false,
-        hasFreezeAbility: false,
-        isDoublePoints: false,
-        cooldown: 0
+    for (const player of onlineUsers) {
+        if (player.playerNo == playerNumber) {
+            username = player.username
+            name = player.name
+        }
     }
-]
+
+    return { username, name }
+}
+
+// let onlineUsers = [
+//     {
+//         username: "tom",
+//         playerNo: 2,
+//         name: "Tom Chan",
+//         points: 0,
+//         isFrozen: false,
+//         hasFreezeAbility: false,
+//         isDoublePoints: false,
+//         cooldown: 0
+//     },
+//     {
+//         username: "sam",
+//         playerNo: 1,
+//         name: "Sam Wong",
+//         points: 0,
+//         isFrozen: false,
+//         hasFreezeAbility: false,
+//         isDoublePoints: false,
+//         cooldown: 0
+//     }
+// ]
+let onlineUsers = []
 
 let marbles = {}
 
@@ -159,6 +174,7 @@ app.get('/signout', (req, res) => {
 
 // Get all online users
 app.get("/onlineUsers", (req, res)=>{
+    console.log('server: getting all online users...')
     res.json(onlineUsers)
 })
 
@@ -190,6 +206,16 @@ io.on("connection", (socket) => {
 				delete waitingUsers[username]
 			}
 			io.emit('remove user', JSON.stringify(user))
+
+            for (const player of onlineUsers) {
+                if (player.username == username) {
+                    const index = onlineUsers.indexOf(player);
+                    if (index > -1) {
+                        onlineUsers.splice(index, 1);
+                      }
+                }
+            }
+            io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
 		}
 	})
 
@@ -198,6 +224,54 @@ io.on("connection", (socket) => {
 		// Send the online users to the browser
 		socket.emit('users', JSON.stringify(waitingUsers))
 	})
+
+    socket.on("join player", (number) => {
+        if (socket.request.session.user) {
+            const player1Status = getInfoWithNumber(1)
+            const player2Status = getInfoWithNumber(2)
+            const user = socket.request.session.user
+            if (number == 1) {
+                if (player1Status.username == null && player2Status.username !== user.username) {
+                    onlineUsers.push(
+                        {
+                            username: user.username,
+                            playerNo: 1,
+                            name: user.name,
+                            points: 0,
+                            isFrozen: false,
+                            hasFreezeAbility: false,
+                            isDoublePoints: false,
+                            cooldown: 0
+                        }
+                    )
+                    io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
+                }
+            } else if (number == 2) {
+                if (player2Status.username == null && player1Status.username !== user.username) {
+                    onlineUsers.push(
+                        {
+                            username: user.username,
+                            playerNo: 2,
+                            name: user.name,
+                            points: 0,
+                            isFrozen: false,
+                            hasFreezeAbility: false,
+                            isDoublePoints: false,
+                            cooldown: 0
+                        }
+                    )
+                    io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
+                }
+            }
+        }
+    })
+
+    // Client side request player 1 & 2 status
+    socket.on('get player1&2 status', () => {
+        const player1 = getInfoWithNumber(1)
+        const player2 = getInfoWithNumber(2)
+        io.emit('player1&2 status', JSON.stringify({ player1, player2 }))
+    })
 
     // Broadcast to all users 
     io.emit("broadcastNewConnection")

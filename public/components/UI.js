@@ -81,6 +81,8 @@ const SignInForm = (function () {
 
 const PlayerSelectionPanel = (function () {
 	const initialize = function () {
+		$('#join-player1-btn').click(joinPlayer1)
+		$('#join-player2-btn').click(joinPlayer2)
 		$('#player-selection-container').hide()
 	}
 
@@ -92,7 +94,24 @@ const PlayerSelectionPanel = (function () {
 		$('#player-selection-container').hide()
 	}
 
-	return { initialize, show, hide }
+	const joinPlayer1 = function () {
+		Socket.joinPlayer(1)
+	}
+
+	const joinPlayer2 = function () {
+		Socket.joinPlayer(2)
+	}
+
+	const updatePlayerStatus = function (status) {
+		const player1Name = $('#player1-name')
+		const player2Name = $('#player2-name')
+
+		console.log('status: ', status)
+		player1Name.text(status.player1.name)
+		player2Name.text(status.player2.name)
+	}
+
+	return { initialize, show, hide, joinPlayer1, joinPlayer2, updatePlayerStatus }
 })()
 
 const UserPanel = (function () {
