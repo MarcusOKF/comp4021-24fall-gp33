@@ -9,10 +9,12 @@ const GameController = (function() {
     let pond, pondDimensions;
     let spectatorFrogs = [];
     let marbles = {}
+    
 
     let pointsPanel;
     let abilityPanel;
     let timePanel;
+
 
     const totalGameTime = 60;
     let gameStartTime = 0;
@@ -30,10 +32,12 @@ const GameController = (function() {
         context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height); 
 
         userFrog1 = userFrog2 = null
-        user1 = user1 = null
+        user1 = user2 = null
         pond = pondDimensions = null
         spectatorFrogs = []
         marbles = {}
+        AudiencePack.removeAllAudiences();
+        
         
         if (pointsPanel) pointsPanel.emptyPanels()
         if (abilityPanel) abilityPanel.emptyPanels()
@@ -46,6 +50,8 @@ const GameController = (function() {
 
 
     const startGame = () => {
+     
+
         canvas = $("#game-arena-canvas")
         context = canvas.get(0).getContext("2d")
         context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height);
@@ -78,6 +84,9 @@ const GameController = (function() {
 
                 // Load time panel
                 timePanel = TimePanel
+
+                // load audience
+                AudiencePack.initializeAudiences(context);
                 
             } else {
                 console.log("Need two users.....")
@@ -215,7 +224,7 @@ const GameController = (function() {
         // Timer
         if (gameStartTime == 0) gameStartTime = now;
         const gameTimeSoFar = now - gameStartTime;
-        const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+        const timeRemaining = ((totalGameTime * 1000 - gameTimeSoFar) / 1000);
         timePanel.updateTimer(timeRemaining)
 
         // Clear the context
@@ -225,8 +234,10 @@ const GameController = (function() {
         userFrog1.draw()
         userFrog2.draw()
         pond.draw()
-        // TBD: animate spetator frogs 
-        // TBD: animate another thing
+        // TBD: animate spectator frogs 
+        AudiencePack.goToNextFrameAllAudiences();
+        AudiencePack.drawAllAudiences();
+     
 
 
         // Randomly update the coordinates of marbles in server, then draw
@@ -238,6 +249,7 @@ const GameController = (function() {
 
         // Game over conditions
         if (timeRemaining <= 0 || Object.keys(marbles).length == 0 || hasAnyUserWon){
+            
             timePanel.updateTimer("0")
             pond.disableClickablePond()
             sounds.background.pause()
@@ -251,7 +263,11 @@ const GameController = (function() {
     }
 
     const gameOverHandler = () => {
+        
         writeTextToTextBox("Game Over !!!")
+        document.getElementById("game-play-layout").style.display = "none";
+        document.querySelector(".page3").style.display = "block";
+
 
     }
 
