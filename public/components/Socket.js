@@ -14,8 +14,36 @@ const Socket = (function() {
         // Wait for the socket to connect successfully
         socket.on("connect", () => {
             console.log("This browser connected to socket")
+
+			// Get the online user list
+			socket.emit('get users')
+            OnlineUsersPanel.showPanel()
+            PlayerSelectionPanel.show()
         });
 
+        // Set up the users event
+		socket.on('users', (onlineUsers) => {
+			onlineUsers = JSON.parse(onlineUsers)
+
+			// Show the online users
+			OnlineUsersPanel.update(onlineUsers)
+		})
+
+        // Set up the add user event
+		socket.on('add user', (user) => {
+			user = JSON.parse(user)
+
+			// Add the online user
+			OnlineUsersPanel.addUser(user)
+		})
+
+        // Set up the remove user event
+		socket.on('remove user', (user) => {
+			user = JSON.parse(user)
+
+			// Remove the online user
+			OnlineUsersPanel.removeUser(user)
+		})
 
         socket.on("broadcastNewConnection", () => {
             console.log("This broadcasts a new connection")
@@ -72,6 +100,14 @@ const Socket = (function() {
 
     };
 
+    // This function disconnects the socket from the server
+	const disconnect = function () {
+		socket.disconnect()
+		socket = null
+        OnlineUsersPanel.hidePanel()
+        PlayerSelectionPanel.hide()
+	}
+
     const startGame = () => {
         socket.emit("startGame")
     }
@@ -120,5 +156,5 @@ const Socket = (function() {
         socket.emit("resetGameSettings")
     }
 
-    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
+    return { getSocket, connect, disconnect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
 })();
