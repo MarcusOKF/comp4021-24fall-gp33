@@ -42,7 +42,7 @@ const Pond = (cv, ctx, x, y, userFrog1, userFrog2) => {
         if (checkPointIsInPond(targetX, targetY) && clickable){
             // For now lets say the session user is player 1
             const user = { playerNo: Authentication.getPlayerID() } // Auth.getUser()
-            console.log('user.playerNo: ', user.playerNo)
+            
             if (user.playerNo == 1){
                 userFrog1.userFrogTongue.shootTongueToTarget(targetX, targetY)
             } else if (user.playerNo == 2){

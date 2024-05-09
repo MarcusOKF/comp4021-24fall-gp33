@@ -6,6 +6,8 @@ body {
     height: 100vh;
     padding: 0;
     margin: 0;
+	background-image: url(https://i.pinimg.com/originals/af/2a/9a/af2a9a5a6a7753ff9d544d1732d59415.gif);
+    background-size: cover;
 }
 
 /* Game Front Page */
@@ -183,8 +185,21 @@ form button.icon:active {
 	margin: 2px -2px -2px 2px;
 }
 
+@keyframes rainbow {
+	0% { text-shadow: 0 0 5px red; }
+	14% { text-shadow: 0 0 5px orange; }
+	28% { text-shadow: 0 0 5px yellow; }
+	42% { text-shadow: 0 0 5px green; }
+	57% { text-shadow: 0 0 5px blue; }
+	71% { text-shadow: 0 0 5px indigo; }
+	85% { text-shadow: 0 0 5px violet; }
+	100% { text-shadow: 0 0 5px red; }
+}
+
 /* Game Play Page Layout */
 #game-play-layout {
+	font-family: "ＭＳ Ｐゴシック";
+	animation: rainbow 5s linear infinite;
     width: 100vw;
     height: 100vh;
     display: grid;
@@ -225,7 +240,6 @@ form button.icon:active {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #755E56;
 }
 #game-arena-canvas {
     border: solid 1px;
