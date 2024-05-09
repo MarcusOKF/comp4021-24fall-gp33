@@ -215,6 +215,7 @@ io.on("connection", (socket) => {
 		const { username } = user
 		waitingUsers[username] = user
 		io.emit('add user', JSON.stringify(user))
+        // console.log('player status: ', onlineUsers)
 	}
 
     // User sign out
@@ -533,13 +534,15 @@ io.on("connection", (socket) => {
     })    
 
     socket.on("resetGameSettings", () => {
-        onlineUsers.forEach(u => {
-            u.points = 0
-            u.isFrozen = false
-            u.hasFreezeAbility = false
-            u.isDoublePoints = false
-            u.cooldown = 0
-        })
+        // onlineUsers.forEach(u => {
+        //     u.points = 0
+        //     u.isFrozen = false
+        //     u.hasFreezeAbility = false
+        //     u.isDoublePoints = false
+        //     u.cooldown = 0
+        // })
+        onlineUsers = []
+        io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
 
         io.emit("resetGameSettings")
     })  
