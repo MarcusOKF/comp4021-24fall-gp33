@@ -121,6 +121,7 @@ const Socket = (function() {
         socket.on("resetGameSettings",() => {
             UI.showFrontPage()
             GameController.resetGameSettings()
+            Authentication.setPlayerID(-1)
         })
 
     };

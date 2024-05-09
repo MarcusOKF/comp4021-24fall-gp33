@@ -94,7 +94,6 @@ const GameController = (function() {
 
             // Fake current user
             const user = { playerNo: Authentication.getPlayerID() } // Auth.getUser()
-            console.log('user.playerNo: ', user.playerNo)
 
             // Check if a frog is frozen
             if (user.playerNo == 1) {

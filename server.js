@@ -195,7 +195,7 @@ app.get('/playerID', (req, res) => {
 
 // Get all online users
 app.get("/onlineUsers", (req, res)=>{
-    console.log('server: getting all online users...')
+    // console.log('server: getting all online users...')
     res.json(onlineUsers)
 })
 
