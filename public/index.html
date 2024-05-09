@@ -74,7 +74,7 @@
             
             <div id="online-user-panel">
                 <span>Online users: </span>
-                <span id="online-user-list">name1, name1, name1, name1, name1, name1</span>
+                <span id="online-user-list"></span>
             </div>
 
         </div>
@@ -118,13 +118,31 @@
     <script src="components/PointsPanel.js"></script>
     <script src="components/AbilityPanel.js"></script>
     <script src="components/TimePanel.js"></script>
+    <script src="components/UI.js"></script>
+    <script src="components/Registration.js"></script>
+    <script src="components/Authentication.js"></script>
     <script src="utils.js"></script>
     <script>
         $(function() {
-            console.log("Init")
-            Socket.connect()
+            // Initialize the UI
+            UI.initialize();
 
-            //Build fixed size canvas and context
+            // Validate the signin
+            Authentication.validate(
+                () => {
+                    SignInForm.hide();
+                    UserPanel.update(Authentication.getUser());
+                    UserPanel.show();
+
+                    Socket.connect();
+                },
+                () => { SignInForm.show(); }
+            );
+
+            // console.log("Init")
+            // Socket.connect()
+
+            // Build fixed size canvas and context
             const CANVAS_WIDTH = 800
             const CANVAS_HEIGHT = 600
             let arena = $("#game-arena")
@@ -132,14 +150,14 @@
             let canvas = $("#game-arena-canvas")
             let context = canvas.get(0).getContext("2d")
 
-            // A tmp function that starts the game by click button
-            $("#start-game-button").on("click", (e) => {
-                Socket.startGame() // Also calls GameController.startGame()
-            })
+            // // A tmp function that starts the game by click button
+            // $("#start-game-button").on("click", (e) => {
+            //     Socket.startGame() // Also calls GameController.startGame()
+            // })
 
-            $("#reset-button").on("click", (e) => {
-                Socket.resetGameSettings() // Also calls GameController.resetGameSettings()
-            })
+            // $("#reset-button").on("click", (e) => {
+            //     Socket.resetGameSettings() // Also calls GameController.resetGameSettings()
+            // })
 
 
         });

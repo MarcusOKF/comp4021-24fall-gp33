@@ -1,0 +1,18 @@
+{
+ "tony": {
+  "name": "Tony Lee",
+  "password": "$2b$10$Yxb2fSgA5RFn9Oz9TxjLLuve/GiPXCs2DWVFhyFDr4qz39qglwp8e"
+ },
+ "may": {
+  "name": "May Wong",
+  "password": "$2b$10$gLc3Ri9W6P650EKKbexw6uvirV8Bar7gmvAtMcoMiPiR3rsY50GVu"
+ },
+ "jason": {
+  "name": "Jason Yau",
+  "password": "$2b$10$J.JfJI7UberlzEvG23Rd7eDDs.iTO1PAtMl7U848BXLoTlyAjBRgi"
+ },
+ "steve": {
+  "name": "Steve",
+  "password": "$2b$10$PTGl43.nWSCZEpROD9xeTe2tVSHvxbUa7DkOxiY559EhaqIkL2g0m"
+ }
+}
