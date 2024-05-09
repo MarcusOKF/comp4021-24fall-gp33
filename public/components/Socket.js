@@ -14,8 +14,59 @@ const Socket = (function() {
         // Wait for the socket to connect successfully
         socket.on("connect", () => {
             console.log("This browser connected to socket")
+
+			// Get the online user list
+			socket.emit('get users')
+            // Get the player selection status
+			socket.emit('get player1&2 status')
+
+            OnlineUsersPanel.showPanel()
+            PlayerSelectionPanel.show()
         });
 
+        socket.on('update player1&2 status', (status) => {
+			status = JSON.parse(status)
+
+            PlayerSelectionPanel.updatePlayerStatus(status)
+        })
+
+        // Show player 1 & 2 status
+		socket.on('player1&2 status', (playersInfo) => {
+			playersInfo = JSON.parse(playersInfo)
+
+            PlayerSelectionPanel.updatePlayerStatus(playersInfo)
+		})
+
+        // Update session player ID
+        socket.on('update session player ID', (data) => {
+            playerID = (JSON.parse(data)).playerID
+
+            Authentication.setPlayerID(playerID)
+        })
+
+        // Set up the users event
+		socket.on('users', (onlineUsers) => {
+			onlineUsers = JSON.parse(onlineUsers)
+
+			// Show the online users
+			OnlineUsersPanel.update(onlineUsers)
+		})
+
+        // Set up the add user event
+		socket.on('add user', (user) => {
+			user = JSON.parse(user)
+
+			// Add the online user
+			OnlineUsersPanel.addUser(user)
+		})
+
+        // Set up the remove user event
+		socket.on('remove user', (user) => {
+			user = JSON.parse(user)
+
+			// Remove the online user
+			OnlineUsersPanel.removeUser(user)
+		})
 
         socket.on("broadcastNewConnection", () => {
             console.log("This broadcasts a new connection")
@@ -23,6 +74,7 @@ const Socket = (function() {
 
         socket.on("startGameForAllUsers", () => {
             console.log("Start game for users")
+            UI.hideFrontPage()
             GameController.startGame()
         })
 
@@ -67,10 +119,25 @@ const Socket = (function() {
         })
 
         socket.on("resetGameSettings",() => {
+            UI.showFrontPage()
             GameController.resetGameSettings()
+            Authentication.setPlayerID(-1)
         })
 
     };
+
+    const joinPlayer = function (number) {
+        socket.emit('join player', number)
+    }
+
+    // This function disconnects the socket from the server
+	const disconnect = function () {
+		socket.disconnect()
+		socket = null
+        OnlineUsersPanel.hidePanel()
+        PlayerSelectionPanel.hide()
+        Authentication.setPlayerID(-1)
+	}
 
     const startGame = () => {
         socket.emit("startGame")
@@ -120,5 +187,5 @@ const Socket = (function() {
         socket.emit("resetGameSettings")
     }
 
-    return { getSocket, connect, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
+    return { getSocket, connect, disconnect, joinPlayer, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
 })();

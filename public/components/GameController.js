@@ -21,6 +21,13 @@ const GameController = (function() {
 
     let hasAnyUserWon = false;
 
+    /* Create the sounds */
+    const sounds = {
+        background: new Audio("../assets/forest.mp3"),
+        shoot: new Audio("../assets/shoot.mp3"),
+        gameover: new Audio("../assets/gameover.mp3")
+    };
+
     const resetGameSettings = () => {
         context.clearRect(0, 0, canvas.get(0).width, canvas.get(0).height); 
 
@@ -95,7 +102,7 @@ const GameController = (function() {
             let keyCode = event.keyCode || event.which
 
             // Fake current user
-            const user = { playerNo: 1 } // Auth.getUser()
+            const user = { playerNo: Authentication.getPlayerID() } // Auth.getUser()
 
             // Check if a frog is frozen
             if (user.playerNo == 1) {
@@ -135,6 +142,9 @@ const GameController = (function() {
                     // Init ability panel
                     abilityPanel.refreshUserAbilityPanel(user1)
                     abilityPanel.refreshUserAbilityPanel(user2)
+
+                    // Play background music
+                    sounds.background.play()
 
                     // Start animation loop
                     requestAnimationFrame(doFrame)
@@ -242,6 +252,8 @@ const GameController = (function() {
             
             timePanel.updateTimer("0")
             pond.disableClickablePond()
+            sounds.background.pause()
+            sounds.gameover.play()
             gameOverHandler()
             return
         }
@@ -296,6 +308,7 @@ const GameController = (function() {
     // Core logic for calculating whether a marble is eaten
     const handleShootTongueToTarget = (points, user) => {
         // Note: the "user" is only for getting the user.playerNo. The props in the user object are not updated.
+        sounds.shoot.play()
 
         let addedPoints = 0;
         let marblesToRemove = []
@@ -314,6 +327,8 @@ const GameController = (function() {
 
         Socket.addUserPoints(user, addedPoints)
         Socket.deleteMarbles(marblesToRemove)
+
+        // sounds.shoot.pause()
 
     }
 
