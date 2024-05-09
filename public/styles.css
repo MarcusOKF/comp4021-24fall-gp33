@@ -1,7 +1,7 @@
 /* Basic */
 body {
-    min-width: 600px;
-    min-height: 300px;
+    min-width: 1080px;
+    min-height: 720px;
     height: 100vh;
     padding: 0;
     margin: 0;
@@ -79,4 +79,92 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
+    position: absolute;
+    
 }
+#timer {
+    flex: 0.45;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1/1;
+}
+
+/* game end page styles */
+
+  
+  .page3 {
+    background-color: lightblue;
+    height: 100vh;
+    width: 100vw;
+  }
+  
+  .content {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    height: calc(100% - 60px);
+    align-items: center;
+  }
+  
+  .left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 50%;
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  .leaderboard-table {
+    width: 95%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    flex-grow: 1;
+  }
+  
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 10px;
+    
+    text-align: left;
+    border-bottom: 1px solid #000;
+  }
+  
+  .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 50%;
+  }
+  
+  .info-table {
+    width: 95%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    table-layout: auto;
+  }
+  
+  .info-table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #000;
+  }
+  
+  .restart-button,
+  .title-button {
+    display: block;
+    width: 95%;
+    margin: 10px auto;
+    padding: 10px;
+  }
+  
+  .buttons {
+    text-align: center;
+  }

@@ -11,7 +11,7 @@
 <body>
 
     <!-- Game Play Page -->
-    <div id="game-play-page">
+    <div id="game-play-page" >
         <section id="game-play-layout">
             <div id="game-play-header">
                 <button id="start-game-button">Temp button to start game</button>
@@ -38,11 +38,69 @@
 
             <div id="game-status-panel">
                 <div id="p1-points-panel" class="points-panel"></div>
-                <div id="timer" class="time-panel"></div>
+                <svg id="timer" viewBox="0 0 200 200"></svg>
                 <div id="p2-points-panel" class="points-panel"></div>
             </div>
         </section>
     </div> 
+    <!-- Game End Page-->
+    <div class="page3" style = "display: none;">
+        <div class="content">
+          <div class="left">
+            <h2>Leaderboard</h2>
+            <table class="info-table">
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td id="player1">Player 1</td>
+                  <td id="time1">1:23</td>
+                </tr>
+                <tr>
+                  <td id="player2">Player 2</td>
+                  <td id="time2">1:45</td>
+                </tr>
+                <tr>
+                  <td id="player3">Player 3</td>
+                  <td id="time3">2:10</td>
+                </tr>
+                <tr>
+                  <td id="player4">Player 4</td>
+                  <td id="time4">2:35</td>
+                </tr>
+                <tr>
+                  <td id="player5">Player 5</td>
+                  <td id="time5">3:05</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="right">
+            <table class="info-table">
+                <tr>
+                  <td>Info</td>
+                  <td id="info1"></td>
+                </tr>
+                <tr>
+                  <td>info</td>
+                  <td id="info2"></td>
+                </tr>
+                <tr>
+                  <td>info</td>
+                  <td id="info3"></td>
+                </tr>
+              </table>
+            <div class="buttons">
+              <button class="restart-button">Restart</button>
+              <button class="title-button">Return to Title Page</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
     <!-- Scripts -->
@@ -57,6 +115,7 @@
     <script src="components/PointsPanel.js"></script>
     <script src="components/AbilityPanel.js"></script>
     <script src="components/TimePanel.js"></script>
+    <script src="components/AudiencePack.js"></script>
     <script src="utils.js"></script>
     <script>
         $(function() {
