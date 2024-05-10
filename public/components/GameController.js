@@ -265,7 +265,7 @@ const GameController = (function() {
     const gameOverHandler = () => {
 
         SummaryController.showPage();
-        Socket.resetGameSettings();
+        
         
         writeTextToTextBox("Game Over !!!")
         

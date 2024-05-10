@@ -11,13 +11,23 @@ const SummaryController = (function () {
   
     const showPage = function () {
       $('#Page3').show();
+      setTimeout(() => {
+        Socket.resetGameSettings();
+      }, 1500);
+
+      
     };
   
     const restartButtonClick = function () {
-       Socket.joinPlayerRematch(1);
+        
+        
+           Socket.joinPlayerRematch(1);
+        
+        
     };
   
     const titleButtonClick = function () {
+        
         hidePage();
         UI.showFrontPage();
     };
