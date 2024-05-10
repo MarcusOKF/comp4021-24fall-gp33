@@ -1,16 +1,16 @@
 /* Basic */
 body {
 
-    min-width: 1080px;
-    min-height: 720px;
-    user-select: none;
+  min-width: 1080px;
+  min-height: 720px;
+  user-select: none;
 
 
-    height: 100vh;
-    padding: 0;
-    margin: 0;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
 	background-image: url(https://i.pinimg.com/originals/af/2a/9a/af2a9a5a6a7753ff9d544d1732d59415.gif);
-    background-size: cover;
+  background-size: cover;
 }
 
 /* Game Front Page */
@@ -202,7 +202,7 @@ form button.icon:active {
 /* Game Play Page Layout */
 #game-play-layout {
 	font-family: "ＭＳ Ｐゴシック";
-	animation: rainbow 5s linear infinite;
+	/* animation: rainbow 5s linear infinite; */
     width: 100vw;
     height: 100vh;
     display: grid;
@@ -301,6 +301,8 @@ form button.icon:active {
     justify-content: center;
     height: calc(100% - 60px);
     align-items: center;
+    background-image: url(https://preview.redd.it/for-hire-open-commission-pixel-art-backgrounds-character-v0-x6atcadvyrga1.gif?width=2100&auto=webp&s=e641174bfdb4a3e8811ece2119090d7c928185d3);
+    background-size: cover;
   }
   
   .left {
@@ -315,6 +317,10 @@ form button.icon:active {
     text-align: center;
     color: #4c1ae33c;
 	  animation: rainbow 5s linear infinite;
+  }
+
+  #learderboard-title {
+    font-size: 4rem;
   }
   
   .leaderboard-table {
@@ -338,6 +344,7 @@ form button.icon:active {
     justify-content: flex-start;
     align-items: center;
     width: 50%;
+    font-size: 2rem;
   }
   
   .info-table {
@@ -345,6 +352,9 @@ form button.icon:active {
     border-collapse: collapse;
     margin-bottom: 20px;
     table-layout: auto;
+    font-size: 2rem;
+    color: black;
+    -webkit-text-stroke: 1px #e5ff00;
   }
   
   .info-table td {
@@ -359,6 +369,10 @@ form button.icon:active {
     width: 95%;
     margin: 10px auto;
     padding: 10px;
+    border-radius: 1rem;
+    background-color: #000;
+    color: white;
+    -webkit-text-stroke: 1px #88ff00;
   }
   
   .buttons {

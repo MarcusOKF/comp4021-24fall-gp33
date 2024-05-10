@@ -55,7 +55,7 @@ const SummaryController = (function () {
         $('#info3').text(score2PerTime);
       }
 
-      const leaderboardDataArray = leaderboardOutput.split(" ");
+      const leaderboardDataArray = leaderboardOutput.split(",");
       console.log(leaderboardDataArray);
       const leaderboardData = [];
       for (let i = 0; i < leaderboardDataArray.length && i < 10; i += 2) {
