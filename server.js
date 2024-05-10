@@ -601,96 +601,79 @@ io.on("connection", (socket) => {
 
     socket.on("getdataone", (time) => {
         let output = '';
-
-        fs.readFile('./data/leaderboard.json', 'utf8', (err, data) => {
-            if (err) {
-              console.error('Error reading leaderboard.json:', err);
-              return;
-            }
-        
-            let leaderboard = JSON.parse(data);
-            let betterPlayerName;
-        
-            // Get the better score of both players
-            if (onlineUsers.find((user) => user.playerNo === 1).points > onlineUsers.find((user) => user.playerNo === 2).points){
-                betterPlayerName = onlineUsers.find((user) => user.playerNo === 1).name;
-            }
-            else {
-                betterPlayerName = onlineUsers.find((user) => user.playerNo === 2).name;
-            }
-        
-            // Get the name of the better player
-            
-            
-            // Get the time of the better player
-            const betterPlayerTime = time;
-        
-            // Find the maximum numeric key in the leaderboard
-const maxPosition = Math.max(...Object.keys(leaderboard).map(Number));
-
-// Calculate the next position
-const nextPosition = maxPosition + 1;
-
-// Add the better player to the leaderboard at the next position
-                leaderboard[nextPosition] = {
-                name: betterPlayerName,
-                time: betterPlayerTime
-                };
-        
-            // Sort the leaderboard by time (ascending order)
-            const sortedLeaderboard = Object.keys(leaderboard)
-                .sort((a, b) => parseInt(leaderboard[a].time) - parseInt(leaderboard[b].time))
-                .reduce((acc, key, index) => {
-                    acc[index + 1] = leaderboard[key];
-                    return acc;
-                }, {});
-
-                // Keep only the top 5 entries in the leaderboard
-                const top5Leaderboard = Object.keys(sortedLeaderboard)
-                .slice(0, 5)
-                .reduce((acc, key) => {
-                    acc[key] = sortedLeaderboard[key];
-                    return acc;
-                }, {});
-
-                
-                Object.keys(top5Leaderboard).forEach((key) => {
-                const position = key;
-                const { name, time } = top5Leaderboard[key];
-                output += `${name} ${time} `;
-                });
-
-                // Write the updated leaderboard back to the file
-                fs.writeFile('./data/leaderboard.json', JSON.stringify(top5Leaderboard), 'utf8', (err) => {
-                    if (err) {
-                        console.error('Error writing leaderboard.json:', err);
-                        return;
-                    }
-                    
-                    console.log('Leaderboard updated successfully.');
-                    });
-                
+      
+        try {
+          const data = fs.readFileSync('./data/leaderboard.json', 'utf8');
+          let leaderboard = JSON.parse(data);
+          let betterPlayerName;
+      
+          // Get the better score of both players
+          if (onlineUsers.find((user) => user.playerNo === 1).points > onlineUsers.find((user) => user.playerNo === 2).points) {
+            betterPlayerName = onlineUsers.find((user) => user.playerNo === 1).name;
+          } else {
+            betterPlayerName = onlineUsers.find((user) => user.playerNo === 2).name;
+          }
+      
+          // Get the time of the better player
+          const betterPlayerTime = time;
+      
+          // Find the maximum numeric key in the leaderboard
+          const maxPosition = Math.max(...Object.keys(leaderboard).map(Number));
+      
+          // Calculate the next position
+          const nextPosition = maxPosition + 1;
+      
+          // Add the better player to the leaderboard at the next position
+          leaderboard[nextPosition] = {
+            name: betterPlayerName,
+            time: betterPlayerTime
+          };
+      
+          // Sort the leaderboard by time (ascending order)
+          const sortedLeaderboard = Object.keys(leaderboard)
+            .sort((a, b) => parseInt(leaderboard[a].time) - parseInt(leaderboard[b].time))
+            .reduce((acc, key, index) => {
+              acc[index + 1] = leaderboard[key];
+              return acc;
+            }, {});
+      
+          // Keep only the top 5 entries in the leaderboard
+          const top5Leaderboard = Object.keys(sortedLeaderboard)
+            .slice(0, 5)
+            .reduce((acc, key) => {
+              acc[key] = sortedLeaderboard[key];
+              return acc;
+            }, {});
+      
+          Object.keys(top5Leaderboard).forEach((key) => {
+            const position = key;
+            const { name, time } = top5Leaderboard[key];
+            output += `${name} ${time} `;
           });
-
-          
-          
-
-// Generate the output string
-
-
-
-
-
-
-
-        io.emit("getdatatwo",{
+      
+          // Write the updated leaderboard back to the file
+          fs.writeFileSync('./data/leaderboard.json', JSON.stringify(top5Leaderboard), 'utf8');
+      
+          console.log('Leaderboard updated successfully.');
+      
+          // Generate the output string
+      
+          const emitData = {
             score1: onlineUsers.find((user) => user.playerNo === 1).points,
             score2: onlineUsers.find((user) => user.playerNo === 2).points,
             score1PerTime: onlineUsers.find((user) => user.playerNo === 1).points / time,
             score2PerTime: onlineUsers.find((user) => user.playerNo === 2).points / time,
-            leaderboardOutput: output.trim()});
-    })
-    onlineUsers = []
+            leaderboardOutput: output.trim()
+          };
+      
+          // Emit the event with the data
+          io.emit("getdatatwo", emitData);
+        } catch (err) {
+          console.error('Error reading or writing leaderboard.json:', err);
+        }
+      
+        onlineUsers = [];
+      });
 
 });
 
