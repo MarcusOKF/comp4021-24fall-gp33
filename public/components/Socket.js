@@ -75,6 +75,7 @@ const Socket = (function() {
         socket.on("startGameForAllUsers", () => {
             console.log("Start game for users")
             UI.hideFrontPage()
+            SummaryController.hidePage()
             GameController.startGame()
         })
 
@@ -119,15 +120,19 @@ const Socket = (function() {
         })
 
         socket.on("resetGameSettings",() => {
-            UI.showFrontPage()
             GameController.resetGameSettings()
             Authentication.setPlayerID(-1)
         })
+        
 
     };
 
     const joinPlayer = function (number) {
         socket.emit('join player', number)
+    }
+
+    const joinPlayerRematch = function (number) {
+        socket.emit('join player rematch', number)
     }
 
     // This function disconnects the socket from the server
@@ -187,5 +192,5 @@ const Socket = (function() {
         socket.emit("resetGameSettings")
     }
 
-    return { getSocket, connect, disconnect, joinPlayer, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
+    return { joinPlayerRematch,getSocket, connect, disconnect, joinPlayer, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
 })();

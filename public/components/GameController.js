@@ -263,10 +263,12 @@ const GameController = (function() {
     }
 
     const gameOverHandler = () => {
+
+        SummaryController.showPage();
+        Socket.resetGameSettings();
         
         writeTextToTextBox("Game Over !!!")
-        document.getElementById("game-play-layout").style.display = "none";
-        document.querySelector(".page3").style.display = "block";
+        
 
 
     }

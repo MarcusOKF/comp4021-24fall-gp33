@@ -112,7 +112,7 @@
         </section>
     </div> 
     <!-- Game End Page-->
-    <div class="page3" style = "display: none;">
+    <div class="page3" id="Page3">
         <div class="content">
           <div class="left">
             <h2>Leaderboard</h2>
@@ -161,10 +161,11 @@
                   <td>info</td>
                   <td id="info3"></td>
                 </tr>
-              </table>
+            </table>
+            <h2 id="successmessage">You have been added to the queue.</h2>
             <div class="buttons">
-              <button class="restart-button">Restart</button>
-              <button class="title-button">Return to Title Page</button>
+              <button class="restart-button" id="Restart-button">Rematch</button>
+              <button class="title-button" id="Title-button">Return to Title Page</button>
             </div>
           </div>
         </div>
@@ -185,6 +186,7 @@
     <script src="components/TimePanel.js"></script>
 
     <script src="components/AudiencePack.js"></script>
+    <script src="components/SummaryController.js"></script>
 
     <script src="components/UI.js"></script>
     <script src="components/Registration.js"></script>

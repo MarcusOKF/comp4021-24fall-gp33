@@ -295,6 +295,55 @@ io.on("connection", (socket) => {
         }
     })
 
+    socket.on("join player rematch", (number) => {
+        if (socket.request.session.user) {
+            const player1Status = getInfoWithNumber(1)
+            const player2Status = getInfoWithNumber(2)
+            const user = socket.request.session.user
+            
+                if (player1Status.username == null && player2Status.username !== user.username) {
+                    onlineUsers.push(
+                        {
+                            username: user.username,
+                            playerNo: 1,
+                            name: user.name,
+                            points: 0,
+                            isFrozen: false,
+                            hasFreezeAbility: false,
+                            isDoublePoints: false,
+                            cooldown: 0
+                        }
+                    )
+                    socket.emit('update session player ID', JSON.stringify({ playerID: 1 }))
+                    io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
+                }
+                
+             
+                else if (player2Status.username == null && player1Status.username !== user.username) {
+                    onlineUsers.push(
+                        {
+                            username: user.username,
+                            playerNo: 2,
+                            name: user.name,
+                            points: 0,
+                            isFrozen: false,
+                            hasFreezeAbility: false,
+                            isDoublePoints: false,
+                            cooldown: 0
+                        }
+                    )
+                    socket.emit('update session player ID', JSON.stringify({ playerID: 2 }))
+                    io.emit("update player1&2 status", JSON.stringify({ player1: getInfoWithNumber(1), player2: getInfoWithNumber(2) }))
+                }
+            
+
+            // check is there enough player, if yes, start the game
+            if (onlineUsers.length == 2) {
+                io.emit("startGameForAllUsers")  
+            }
+        }
+    })
+
     // Client side request player 1 & 2 status
     socket.on('get player1&2 status', () => {
         const player1 = getInfoWithNumber(1)

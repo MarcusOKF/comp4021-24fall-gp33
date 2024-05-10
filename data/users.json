@@ -1,4 +1,12 @@
 {
+ "1": {
+  "name": "1",
+  "password": "$2b$10$zq4TYgxNN/hnuEoismlZO.2Pq7dvYS43pmlqu3zMjU0MH9MXhBjrS"
+ },
+ "2": {
+  "name": "2",
+  "password": "$2b$10$qhnSlLjvUiuWptVq06KmCO3552JYHz.2o6AOc519iZssYLWpD/d0m"
+ },
  "tony": {
   "name": "Tony Lee",
   "password": "$2b$10$Yxb2fSgA5RFn9Oz9TxjLLuve/GiPXCs2DWVFhyFDr4qz39qglwp8e"

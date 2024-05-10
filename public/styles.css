@@ -290,6 +290,9 @@ form button.icon:active {
 
   
   .page3 {
+    position: fixed;
+	  left: 0;
+	  top: 0;
     background-color: lightblue;
     height: 100vh;
     width: 100vw;
@@ -313,6 +316,8 @@ form button.icon:active {
   
   h2 {
     text-align: center;
+    color: #4c1ae33c;
+	  animation: rainbow 5s linear infinite;
   }
   
   .leaderboard-table {
