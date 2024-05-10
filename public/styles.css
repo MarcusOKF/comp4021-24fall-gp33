@@ -54,7 +54,6 @@ body {
 #game-description-instruction {
 	margin-top: 1rem;
 	padding: 0 5rem 0 5rem;
-	color: #cbab1c;
 }
 #online-user-panel {
 	text-align: center;
@@ -245,9 +244,7 @@ form button.icon:active {
     align-items: center;
     justify-content: center;
 }
-#game-arena-canvas {
-    border: solid 1px;
-}
+
 /* Right Panel */
 #game-status-panel { 
     grid-area: game-status-panel;
