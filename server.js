@@ -648,7 +648,7 @@ io.on("connection", (socket) => {
           Object.keys(top5Leaderboard).forEach((key) => {
             const position = key;
             const { name, time } = top5Leaderboard[key];
-            output += `${name} ${time} `;
+            output += `${name},${time},`;
           });
       
           // Write the updated leaderboard back to the file
