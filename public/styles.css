@@ -244,9 +244,7 @@ form button.icon:active {
     align-items: center;
     justify-content: center;
 }
-#game-arena-canvas {
-    border: solid 1px;
-}
+
 /* Right Panel */
 #game-status-panel { 
     grid-area: game-status-panel;
