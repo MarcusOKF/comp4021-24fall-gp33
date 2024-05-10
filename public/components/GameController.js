@@ -249,11 +249,15 @@ const GameController = (function() {
 
         // Game over conditions
         if (timeRemaining <= 0 || Object.keys(marbles).length == 0 || hasAnyUserWon){
+
+            
+
             
             timePanel.updateTimer("0")
             pond.disableClickablePond()
             sounds.background.pause()
             sounds.gameover.play()
+            SummaryController.showPage(Math.floor(timeRemaining));
             gameOverHandler()
             return
         }
@@ -264,7 +268,7 @@ const GameController = (function() {
 
     const gameOverHandler = () => {
 
-        SummaryController.showPage();
+        
         
         
         writeTextToTextBox("Game Over !!!")

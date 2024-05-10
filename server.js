@@ -596,6 +596,15 @@ io.on("connection", (socket) => {
         io.emit("resetGameSettings")
     })  
 
+    socket.on("getdataone", (time) => {
+
+        io.emit("getdatatwo",{
+            score1: onlineUsers.find((user) => user.playerNo === 1).points,
+            score2: onlineUsers.find((user) => user.playerNo === 2).points,
+            score1PerTime: onlineUsers.find((user) => user.playerNo === 1).points / time,
+            score2PerTime: onlineUsers.find((user) => user.playerNo === 2).points / time});
+    })
+
 });
 
 // Use a web server to listen at port 8000

@@ -123,6 +123,10 @@ const Socket = (function() {
             GameController.resetGameSettings()
             Authentication.setPlayerID(-1)
         })
+
+        socket.on("getdatatwo", (datas) => {
+            SummaryController.writedata(datas);
+         })
         
 
     };
@@ -192,5 +196,11 @@ const Socket = (function() {
         socket.emit("resetGameSettings")
     }
 
-    return { joinPlayerRematch,getSocket, connect, disconnect, joinPlayer, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
+    const getdataone = (timess) => {
+        socket.emit("getdataone",timess)
+    }
+
+    
+
+    return { joinPlayerRematch, getdataone, getSocket, connect, disconnect, joinPlayer, startGame, drawTongue, generateMarbles, randomizeMarbles, addUserPoints , deleteMarbles, updateCooldown, setUserFreezeAbility, useFreezeAbilityOnOpponent, useDoublePointsAbility, checkIfAnyUserHasWon, resetGameSettings};
 })();
