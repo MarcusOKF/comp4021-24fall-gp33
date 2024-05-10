@@ -354,7 +354,7 @@ form button.icon:active {
     table-layout: auto;
     font-size: 2rem;
     color: black;
-    -webkit-text-stroke: 1px #e6ff00d9;
+    -webkit-text-stroke: 1px #e5ff00;
   }
   
   .info-table td {
